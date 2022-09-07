@@ -1,0 +1,44 @@
+.app-menu {
+  margin-left: 5px;
+}
+.menu-btn{
+  min-width: 6em;
+  margin-left: 1px;
+}
+
+.mat-sub-menu{
+  min-width: 10em!important;
+}
+.mat-sub-menu .btn:hover{
+  color: white!important;
+}
+
+.navbar {
+    padding-right: 15px;
+}
+
+.navbar-toggler{
+  border-color: hsla(0,0%,100%,.1);
+}
+
+.navbar-brand {
+    font-size: 30px;
+}
+.navbar-dark .navbar-toggler {
+    color: hsla(0,0%,100%,.5)!important;
+    border-color: hsla(0,0%,100%,.1)!important;
+}
+.active{
+  color: #fff!important;
+}
+.nav-link{
+    color: hsla(0,0%,100%,.5)!important;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+}
+.nav-link.active{
+  color: #fff!important;
+}
+.nav-link:hover{
+    color: hsla(0,0%,100%,.75)!important;
+}

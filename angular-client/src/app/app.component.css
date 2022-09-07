@@ -1,0 +1,8 @@
+/*.container-fluid{
+padding-left:0!important;
+padding-right:0!important;
+}*/
+.router-outlet-container {
+    min-height: 10em;
+    margin-top: 5px;
+}

@@ -1,0 +1,30 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark text-light">
+  <div class="container-fluid">
+    <a routerLink="{{brandLink}}" class=" navbar-brand active">
+      {{ "Meals Orders" | translate }}
+    </a>
+    <button type="button" class="navbar-toggler text-white"  data-bs-toggle="collapse"
+            data-bs-target="#mainNavBar"
+            aria-controls="mainNavBar" aria-expanded="false" >
+      <span class="text-white navbar-toggler-icon border-1"></span>
+    </button>
+    <div class=" app-menu collapse navbar-collapse " id="mainNavBar">
+      <ul class="navbar-nav">
+        <li class="nav-item" *ngFor="let menu of appMenuList; let i = index">
+          <button type="button" mat-button class="nav-link menu-btn btn text-light {{menu.route==currentLink? 'active bg-secondary text-dark':'' }} {{menu.children? 'dropdown-toggle':''}}" 
+                  [matMenuTriggerFor]="menu.children? subMenu:null"
+                  [matMenuTriggerData]="menu.children? {children: menu.children}:null"
+                    [routerLink]="!menu.children? menu.route:null" (click)="currentLink=menu.route"  > {{ menu.title| translate }}</button>
+                        
+                  <mat-menu class="mat-sub-menu bg-dark text-light " #subMenu="matMenu">
+                    <ng-template matMenuContent let-children="children">
+                      <button type="button" 
+                       *ngFor="let subMenu of children" mat-menu-item [routerLink]="subMenu.route"
+                       class="nav-link btn text-light {{subMenu.route==currentLink? 'active bg-secondary text-dark':'' }}" >{{ subMenu.title| translate }}</button>
+                    </ng-template>
+                  </mat-menu>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
