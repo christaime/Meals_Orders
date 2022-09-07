@@ -3,5 +3,9 @@ table {
 }
 
 table .mat-form-field{
-    width: 100%;
+    width: 98%;
+}
+
+.command-column{
+    width: 15em;
 }

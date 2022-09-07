@@ -17,7 +17,7 @@ export class CustomersComponent implements OnInit {
     "code": new FormControl('',[Validators.required]),
     "name": new FormControl('',[Validators.required]),
     "address": new FormControl('',[Validators.required]),
-    "phone": new FormControl('',[Validators.pattern("[0-9]{9+}")]),
+    "phone": new FormControl('',[/*Validators.pattern(/[0-9]{3}(-|\s)/),*/Validators.maxLength(12)]),
     "email": new FormControl('',[Validators.email]),
   });
 
@@ -34,14 +34,17 @@ export class CustomersComponent implements OnInit {
   }
 
   addCustomerToArray(){
-    let customer = new Customer();
-    customer.editable = true;
-    this.initCustomerEditorForm(customer);
-    this.datas = [customer].concat(this.datas);
+    if(this.inEditionMode==false){
+      let customer = new Customer();
+      customer.editable = true;
+      this.initCustomerEditorForm(customer);
+      this.datas = [customer].concat(this.datas);
+    }
   }
 
   saveEditedCustomer(row:any){
     let customer = {...row,...this.customerEditorFormGroup.value};
+    customer.editable = false;
     let datas = [...this.datas];
     const index = datas.findIndex((data)=>{ data.editable == true});
     if(index!=-1){      
@@ -51,11 +54,28 @@ export class CustomersComponent implements OnInit {
   }
 
   editCustomer(row:Customer){
-
+    if(this.inEditionMode == true){// first we deactivate edition on the current edited row
+      let datas = [...this.datas];
+      const index = datas.findIndex((data)=>{ data.editable == true});
+      if(index!=-1){   
+        datas[index].editable = false; 
+        this.datas = datas;
+      }
+    }
+    row.editable = true;
+    this.initCustomerEditorForm(row);
+    this.datas = [...this.datas];
+    this.inEditionMode = true;
   }
 
   deleteCustomer(row: Customer){
-
+    let datas = [...this.datas];
+    const index = datas.findIndex((data)=>{ data.editable == true});
+    if(index!=-1){      
+      datas.splice(index,1);
+      this.datas = datas;
+    }
+    this.inEditionMode = false;
   }
 
   initCustomerEditorForm(customer:Customer){
