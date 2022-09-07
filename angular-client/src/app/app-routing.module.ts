@@ -1,10 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './components/home/home.component';
-import { CustomersComponent } from './components/customers/customers.component';
-import { ItemsComponent } from './components/items/items.component';
-import { OrdersComponent } from './components/orders/orders.component';
-import { OrdersCreateComponent } from './components/orders-create/orders-create.component';
 
 export const RoutesMapping = {
   "home":"home",
@@ -16,16 +12,11 @@ export const RoutesMapping = {
 };
 
 const routes: Routes = [
+  {path:"", redirectTo: "home", pathMatch: "full"},
   {path: "home", component: HomeComponent},
-  {path: "customers", component: CustomersComponent},
-  {path: "items", component: ItemsComponent},
-  {path: "orders", component: OrdersComponent , 
-      children:[
-            {path: "list", component: OrdersComponent},
-            {path: "create", component: OrdersCreateComponent}
-      ]
-  },
-  {path:"", redirectTo: "home", pathMatch: "full"}
+  { path: 'customers', loadChildren: () => import('./modules/customers/customers.module').then(m => m.CustomersModule) },
+  { path: 'items', loadChildren: () => import('./modules/items/items.module').then(m => m.ItemsModule) },
+  { path: 'orders', loadChildren: () => import('./modules/orders/orders.module').then(m => m.OrdersModule) },  
 ];
 
 @NgModule({

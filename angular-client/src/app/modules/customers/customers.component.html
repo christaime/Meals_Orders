@@ -1,0 +1,109 @@
+<div class="container-fluid">
+  <form [formGroup]="customerEditorFormGroup">
+    <table mat-table [dataSource]="datas" class="mat-elevation-z3">
+      <tr mat-header-row *matHeaderRowDef="tableColumns" ></tr>
+      <tr mat-row *matRowDef="let row; columns: tableColumns;" ></tr>
+      <ng-container matColumnDef="Code">
+        <th mat-header-cell *matHeaderCellDef> {{ "Code" | translate  | uppercase}} </th>
+        <td mat-cell *matCellDef="let row;">
+            <mat-form-field appearance="legacy" *ngIf="row.editable==true; else renderCode">
+                <mat-label>{{"Your CODE in UpperCase" | translate}}</mat-label>
+                <input matInput name="code" formControlName="code"/>
+            </mat-form-field>
+            <ng-template #renderCode>
+                <span>{{row.code}}</span>
+            </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Name">
+        <th mat-header-cell *matHeaderCellDef> {{ "Name" | translate | uppercase}} </th>
+        <td mat-cell *matCellDef="let row">
+            <mat-form-field appearance="legacy" *ngIf="row.editable==true; else renderName">
+                <mat-label>{{"Your NAME in UpperCase" | translate}}</mat-label>
+                <input matInput name="name" formControlName="name" />
+            </mat-form-field>
+            <ng-template #renderName>
+                <span>{{row.name}}</span>
+            </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Address">
+        <th mat-header-cell *matHeaderCellDef> {{ "Address" | translate | uppercase}} </th>
+        <td mat-cell *matCellDef="let row">
+            <mat-form-field appearance="legacy" *ngIf="row.editable==true; else renderAddress">
+                <mat-label>{{"Your ADDRESS in UpperCase" | translate}}</mat-label>
+                <input matInput formControlName="address"/>
+            </mat-form-field>
+            <ng-template #renderAddress>
+                <span>{{row.address}}</span>
+            </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Phones">
+        <th mat-header-cell *matHeaderCellDef> {{ "Phones" | translate | uppercase }} </th>
+        <td mat-cell *matCellDef="let row">
+            <mat-form-field appearance="legacy" *ngIf="row.editable==true; else renderPhone">
+                <mat-label>{{"Your PHONE in UpperCase" | translate}}</mat-label>
+                <input matInput formControlName="phone"/>
+            </mat-form-field>
+            <ng-template #renderPhone>
+                <span>{{row.phone}}</span>
+            </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="Email">
+        <th mat-header-cell *matHeaderCellDef> {{ "Email" | translate | uppercase }} </th>
+        <td mat-cell *matCellDef="let row">
+            <mat-form-field appearance="legacy" *ngIf="row.editable==true; else renderEmail">
+                <mat-label>{{"Your Email" | translate}}</mat-label>
+                <input matInput formControlName="email"/>
+            </mat-form-field>
+            <ng-template #renderEmail>
+                <span>{{row.email}}</span>
+            </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="gender">
+        <th mat-header-cell *matHeaderCellDef> {{ "Gender" | translate | uppercase }}  </th>
+        <td mat-cell *matCellDef="let row">
+            <mat-form-field appearance="legacy" *ngIf="row.editable==true; else renderGender">
+                <mat-label>{{"Your Email" | translate}}</mat-label>
+                <mat-select>
+                    <mat-option *ngFor="let gender of genderList" value="gender.value">{{gender.name}}</mat-option>
+                </mat-select>
+            </mat-form-field>
+            <ng-template #renderGender>
+                <span>{{row.gender}}</span>
+            </ng-template>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="command">
+        <th mat-header-cell *matHeaderCellDef>
+          <button mat-icon-button (click)="addCustomerToArray()">
+            <mat-icon class="mat-18">add</mat-icon>
+            {{ "Add a new Customer" | translate }}
+          </button>
+        </th>
+        <td mat-cell *matCellDef="let row">
+            <button *ngIf="row.editable==true; else renderEditBtn" mat-icon-button (click)="saveEditedCustomer(row)">
+                <mat-icon class="mat-18">save</mat-icon>
+                {{ "Save" | translate }}
+            </button>
+            <ng-template #renderEditBtn>
+                <button mat-icon-button (click)="editCustomer(row)">
+                    <mat-icon class="mat-18">edit</mat-icon>
+                    {{ "Edit" | translate }}
+                </button>
+                <button mat-icon-button (click)="deleteCustomer(row)">
+                    <mat-icon class="mat-18">edit</mat-icon>
+                    {{ "Delete" | translate }}
+                </button>
+            </ng-template>
+        </td>
+      </ng-container>
+      <tfoot>
+        <mat-paginator [pageSizeOptions]="[15,20,25,30]"></mat-paginator>
+      </tfoot>
+    </table>
+  </form>
+</div>

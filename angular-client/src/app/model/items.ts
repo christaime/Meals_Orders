@@ -1,10 +1,6 @@
-export class Items {
-    code: string;
-    description: string;
-    id: string;
-    price: string;
-    createdBy!: string;
-    creationDate!: Date;
-    lastModifiedDate!: Date;
-    modifiedBy!: string;
+import { Persistable } from "./persistable";
+export class Items extends Persistable{
+    code!: string;
+    description!: string;
+    price!: string;
 }

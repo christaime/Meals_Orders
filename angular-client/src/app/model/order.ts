@@ -1,10 +1,11 @@
-export class Order {
+import { Persistable } from "./persistable";
+
+export class Order extends Persistable{
     address!: string;
     amount!: string;
     customerCode!: string;
     customerId!: string;
     customerName!: string;
-    id!: string;
     note!: string;//comment on order ?
     oderDate!: Date;
     orderDetails!: OrderItem[];
@@ -13,19 +14,19 @@ export class Order {
     paymentStatus!: string;
 }
 
-export class OrderItem {
-  amount: string;
-  itemCode: string;
-  itemDescription: string;
-  itemId: string;
-  price: string;
-  quantity: number;
+export class OrderItem extends Persistable{
+  amount!: string;
+  itemCode!: string;
+  itemDescription!: string;
+  itemId!: string;
+  price!: string;
+  quantity!: number;
 }
 
 export enum OrderStatus{
   CREATED,
 }
 
-export PaymantStatus {
+export enum PaymantStatus {
   PENDING,
 }
