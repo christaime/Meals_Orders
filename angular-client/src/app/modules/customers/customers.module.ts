@@ -14,6 +14,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { CustomersService } from './customers.service';
+import { FakeServerService } from 'src/app/test/fake-server.service';
 
 
 @NgModule({
@@ -41,6 +43,9 @@ import { MatSelectModule } from '@angular/material/select';
       }
     }),
     CustomersRoutingModule
+  ],
+  providers: [
+    {provide: CustomersService, useClass: FakeServerService}
   ]
 })
 export class CustomersModule { }

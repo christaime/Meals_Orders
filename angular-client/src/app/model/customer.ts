@@ -16,9 +16,9 @@ export class Customer extends Persistable{
     name!:  string;
     phone!:  string;
 
-    public getEditionData(){
-        return {code: this.code,name: this.name, address: this.address, email: this.email, phone: this.phone};
-    }
+    /*public static getEditionData(customer:any):{id:string,code: string,name: string, address: string, email: string, phone: string}{
+        return (customer as {id:string,code: string,name: string, address: string, email: string, phone: string});
+    }*/
 }
 
 export enum Gender {

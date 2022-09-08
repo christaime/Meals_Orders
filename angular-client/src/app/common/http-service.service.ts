@@ -17,7 +17,7 @@ export class HttpServiceService<T extends Persistable>{
   getHttpHeaders(){
     return {
       headers: new HttpHeaders({
-        "application/type":"json"
+        'Content-Type':  'application/json',
       })
     }
   }

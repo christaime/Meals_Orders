@@ -9,17 +9,13 @@ import {HttpClient, HttpClientModule} from '@angular/common/http';
 import { TranslateLoader, TranslateModule} from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatIconModule} from '@angular/material/icon';
 import {MatDividerModule} from '@angular/material/divider';
 import { registerLocaleData } from '@angular/common';
 import frLocale from '@angular/common/locales/fr';
 import enLocale from '@angular/common/locales/en';
 import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from './components/home/home.component';
-import {MatTableModule} from '@angular/material/table';
-import {MatPaginatorModule} from '@angular/material/paginator';
 import {MatMenuModule} from '@angular/material/menu';
-
 registerLocaleData(frLocale);
 registerLocaleData(enLocale);
 
@@ -48,7 +44,9 @@ registerLocaleData(enLocale);
     }),
     BrowserAnimationsModule
   ],
-  providers: [],
+  providers: [
+    
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

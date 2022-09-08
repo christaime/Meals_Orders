@@ -74,8 +74,8 @@
         <td mat-cell *matCellDef="let row">
             <mat-form-field appearance="legacy" *ngIf="row.editable==true; else renderGender">
                 <mat-label>{{"Gender" | translate}}</mat-label>
-                <mat-select>
-                    <mat-option *ngFor="let gender of genderList" value="gender.value">{{gender.name}}</mat-option>
+                <mat-select formControlName="gender">
+                    <mat-option *ngFor="let gender of genderList" [value]="gender.value">{{gender.name}}</mat-option>
                 </mat-select>
             </mat-form-field>
             <ng-template #renderGender>
@@ -85,28 +85,43 @@
       </ng-container>
       <ng-container matColumnDef="command">
         <th class="command-column" mat-header-cell *matHeaderCellDef>
-          <button color="primary" mat-icon-button [disabled]="inEditionMode==true" (click)="addCustomerToArray()">
+          <button type="button" color="primary" mat-icon-button [disabled]="inEditionMode==true" (click)="addCustomerToArray()">
             <mat-icon class="mat-18">add</mat-icon>
             {{ "Add a new Customer" | translate }}
           </button>
         </th>
         <td class="command-column" mat-cell *matCellDef="let row">
-            <div  *ngIf="row.editable==true; else renderEditBtn">
-              <button [disabled]="customerEditorFormGroup.valid==false" mat-icon-button (click)="saveEditedCustomer(row)">
-                <mat-icon class="mat-18">save</mat-icon>
-                {{ "Add" | translate }}
-              </button>
-              <button mat-icon-button (click)="deleteCustomer(row)">
-                <mat-icon class="mat-18">edit</mat-icon>
-                {{ "Abandon" | translate }}
-              </button>
-            </div>            
+            <span  *ngIf="row.editable==true then editionCommand; else renderEditBtn"></span>
+            <ng-template #editionCommand>
+              <span  *ngIf="row.id!=null then updateCommand; else renderCreateBtn"></span>
+              <ng-template #updateCommand>
+                <button type="button" [disabled]="customerEditorFormGroup.valid==false" mat-icon-button (click)="saveEditedCustomer(row)">
+                  <mat-icon class="mat-18">save</mat-icon>
+                  {{ "Save" | translate }}
+                </button>
+                <button type="button" mat-icon-button (click)="deleteCustomer(row)">
+                  <mat-icon class="mat-18">edit</mat-icon>
+                  {{ "Delete" | translate }}
+                </button>
+              </ng-template>
+              <ng-template #renderCreateBtn>
+                <button type="button" [disabled]="customerEditorFormGroup.valid==false" mat-icon-button (click)="saveEditedCustomer(row)">
+                  <mat-icon class="mat-18">save</mat-icon>
+                  {{ "Add" | translate }}
+                </button>
+                <button *ngIf="row.id==null" type="button" mat-icon-button (click)="deleteCustomer(row)">
+                  <mat-icon class="mat-18">edit</mat-icon>
+                  {{ "Abandon" | translate }}
+                </button>
+              </ng-template>
+              
+            </ng-template>        
             <ng-template #renderEditBtn>
-                <button [disabled]="customerEditorFormGroup.valid==false" mat-icon-button (click)="editCustomer(row)">
+                <button type="button" [disabled]="customerEditorFormGroup.valid==false" mat-icon-button (click)="editCustomer(row)">
                     <mat-icon class="mat-18">edit</mat-icon>
                     {{ "Update" | translate }}
                 </button>
-                <button mat-icon-button (click)="deleteCustomer(row)">
+                <button type="button" mat-icon-button (click)="deleteCustomer(row)">
                   <mat-icon class="mat-18">edit</mat-icon>
                   {{ "Delete" | translate }}
                 </button>
