@@ -1,11 +1,37 @@
+mat-card-content{
+    margin-top: 5px;;
+}
+
+.table-container{
+    overflow: scroll;
+}
+
 table {
     width: 100%;
+    min-width: 50em;
 }
 
 table .mat-form-field{
     width: 98%;
+    font-size: 13px;
 }
 
 .command-column{
     width: 15em;
+}
+
+.mat-row:nth-child(even){
+    background-color: #f8f9fa;
+}
+tr.mat-row{
+    height: 2em!important;
+}
+table td {
+    font-size: 13px;
+}
+
+table.entity-table button.btn {
+    font-size: smaller;
+    margin-right: 2px;
+    height: 2.5em;
 }

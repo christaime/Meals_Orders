@@ -25,8 +25,12 @@ export class OrderItem extends Persistable{
 
 export enum OrderStatus{
   CREATED,
+  CANCELLED,
+  READY,
+  SHIPPED
 }
 
 export enum PaymantStatus {
   PENDING,
+  PAID
 }

@@ -1,0 +1,101 @@
+<div [formGroup]="orderEditor" class="container-fluid">
+    <div class="row">
+        <mat-form-field class="col-xs-12 col-2" appearance="outline">
+            <mat-label>{{ "Number" | translate | uppercase}}</mat-label>
+            <input formControlName="orderNumber" matInput  placeholder="{{ 'Unique order number' | translate}}">
+        </mat-form-field>
+        <mat-form-field class="col-xs-12 col-2" appearance="outline">
+            <mat-label>{{ "Order date" | translate | uppercase}}</mat-label>
+            <input formControlName="oderDate" matInput [matDatepicker]="picker">
+            <mat-hint>{{ "foarmat MM/DD/YYYY"| translate}}</mat-hint>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <mat-form-field class="col-xs-12 col-4" appearance="outline">
+            <mat-label>{{ "Address" | translate | uppercase}}</mat-label>
+            <input formControlName="address" matInput placeholder="{{ 'delivery address' | translate}}">
+        </mat-form-field>
+        <mat-form-field class="col-xs-12 col-2" appearance="outline">
+            <mat-label>{{ "Order status"| translate |uppercase}}</mat-label>
+            <mat-select formControlName="orderStatus">
+              <mat-option *ngFor="let orderStatus of orderStatusList" [value]="orderStatus.value">
+                {{orderStatus.name}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <mat-form-field class="col-xs-12 col-2" appearance="outline">
+            <mat-label>{{ "Order payment status"| translate |uppercase}}</mat-label>
+            <mat-select formControlName="paymentStatus">
+              <mat-option *ngFor="let orderPaymentStatus of orderPaymantStatusList" [value]="orderPaymentStatus.value">
+                {{orderPaymentStatus.name}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field class="col-xs-12 col-3" appearance="outline">
+            <mat-label>{{ "Customer code"| translate |uppercase}}</mat-label>
+            <input type="text"  matInput formControlName="customerCode" [matAutocomplete]="auto">
+            <i matSuffix *ngIf="this.orderEditor.get('customerCode')?.value != null && this.orderEditor.get('customerCode')?.value.trim() != ''" (click)="clearCustomer()" matTooltip="{{'Clear selected' | translate}}" class="bi bi-x-octagon-fill text-danger"></i>
+            <i matSuffix class="bi bi-search"></i>
+            <mat-autocomplete #auto="matAutocomplete">
+                <mat-option (onSelectionChange)="selectCustmer(customer)" *ngFor="let customer of customerList |async" [value]="customer.code">
+                    {{customer.code}} {{customer.name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="col-xs-12 col-4" appearance="outline">
+            <mat-label>{{ "Customer name"| translate |uppercase}}</mat-label>
+            <input type="text"  matInput formControlName="customerName" [matAutocomplete]="auto1">
+            <i matSuffix *ngIf="this.orderEditor.get('customerName')?.value!= null && this.orderEditor.get('customerName')?.value.trim() != ''" (click)="clearCustomer()" matTooltip="{{'Clear selected' | translate}}" class="bi bi-x-octagon-fill text-danger"></i>
+            <i matSuffix class="bi bi-search"></i>
+            <mat-autocomplete #auto1="matAutocomplete">
+                <mat-option (onSelectionChange)="selectCustmer(customer)" *ngFor="let customer of customerList |async" [value]="customer.name">
+                    {{customer.name}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+        <mat-form-field class="col-xs-12 col-5" appearance="outline">
+            <mat-label>{{ "Note" | translate | uppercase}}</mat-label>
+            <input formControlName="note" matInput placeholder="{{ 'note' | translate}}">
+        </mat-form-field>
+    </div>
+    <mat-divider></mat-divider>
+    <div [formGroup]="itemFormEditor" class="row ">
+        <mat-form-field class="col-xs-12 col-2" appearance="outline">
+            <mat-label>{{ "Item code"| translate |uppercase}}</mat-label>
+            <input type="text"  matInput formControlName="itemCode" [matAutocomplete]="auto2">
+            <i matSuffix *ngIf="this.itemFormEditor.get('itemCode')?.value!=null && this.itemFormEditor.get('itemCode')?.value.trim() != ''" (click)="clearItem()" matTooltip="{{'Clear selected' | translate}}" class="bi bi-x-octagon-fill text-danger"></i>
+            <i matSuffix class="bi bi-search"></i>
+            <mat-autocomplete #auto2="matAutocomplete">
+                <mat-option (onSelectionChange)="selectItem(item)" *ngFor="let item of itemList |async" [value]="item.code">
+                    {{item.code}} {{item.description}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="col-xs-12 col-4" appearance="outline">
+            <mat-label>{{ "Item name"| translate |uppercase}}</mat-label>
+            <input type="text"  matInput formControlName="itemName" [matAutocomplete]="auto3">
+            <i matSuffix *ngIf="this.itemFormEditor.get('itemName')?.value!=null && this.itemFormEditor.get('itemName')?.value.trim() != ''" (click)="clearItem()" matTooltip="{{'Clear selected' | translate}}" class="bi bi-x-octagon-fill text-danger"></i>
+            <i matSuffix class="bi bi-search"></i>
+            <mat-autocomplete #auto3="matAutocomplete">
+                <mat-option (onSelectionChange)="selectItem(item)"  *ngFor="let item of itemList |async" [value]="item.description">
+                    {{item.description}}
+                </mat-option>
+            </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="col-xs-12 col-2" appearance="outline" >
+            <mat-label>{{ "Price" | translate | uppercase}}</mat-label>
+            <input matInput type="number" formControlName="price">
+        </mat-form-field>
+        <mat-form-field class="col-xs-12 col-2" appearance="outline" >
+            <mat-label>{{ "Quantity" | translate | uppercase}}</mat-label>
+            <input matInput type="number" formControlName="quantity">
+        </mat-form-field>
+        <div class="col-xs-12 col-2">
+            <button class="btn btn-secondary" mat-raised-button >{{"Save changes" | translate | uppercase}}</button>
+        </div>
+    </div>
+</div>

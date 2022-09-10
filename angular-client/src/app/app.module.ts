@@ -16,6 +16,10 @@ import enLocale from '@angular/common/locales/en';
 import { FooterComponent } from './components/footer/footer.component';
 import { HomeComponent } from './components/home/home.component';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { OverlayModule } from '@angular/cdk/overlay';
+
 registerLocaleData(frLocale);
 registerLocaleData(enLocale);
 
@@ -33,6 +37,9 @@ registerLocaleData(enLocale);
     MatToolbarModule,
     MatDividerModule,
     MatMenuModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+    OverlayModule,
     TranslateModule.forRoot({
       loader: {
          provide: TranslateLoader,
@@ -45,7 +52,7 @@ registerLocaleData(enLocale);
     BrowserAnimationsModule
   ],
   providers: [
-    
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 36000}}
   ],
   bootstrap: [AppComponent]
 })

@@ -1,137 +1,164 @@
-<div class="container-fluid">
-  <form [formGroup]="customerEditorFormGroup">
-    <table mat-table [dataSource]="datas" class="mat-elevation-z3">
-      <tr mat-header-row *matHeaderRowDef="tableColumns" ></tr>
-      <tr mat-row *matRowDef="let row; columns: tableColumns;" ></tr>
-
-      <ng-container matColumnDef="Code">
-        <th mat-header-cell *matHeaderCellDef> {{ "Code" | translate  | uppercase}} </th>
-        <td mat-cell *matCellDef="let row;">
-            <mat-form-field appearance="legacy" *ngIf="row.editable==true; else renderCode">
-                <mat-label>{{"Code" | translate}}</mat-label>
-                <input matInput name="code" formControlName="code"/>
-                <mat-hint>{{ "In upper case" | translate}}</mat-hint>
-            </mat-form-field>
-            <ng-template #renderCode>
-                <span>{{row.code}}</span>
-            </ng-template>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="Name">
-        <th mat-header-cell *matHeaderCellDef> {{ "Name" | translate | uppercase}} </th>
-        <td mat-cell *matCellDef="let row">
-            <mat-form-field appearance="legacy" *ngIf="row.editable==true; else renderName">
-                <mat-label>{{"Name" | translate}}</mat-label>
-                <input matInput name="name" formControlName="name" />
-                <mat-hint>{{ "In upper case" | translate}}</mat-hint>
-            </mat-form-field>
-            <ng-template #renderName>
-                <span>{{row.name}}</span>
-            </ng-template>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="Address">
-        <th mat-header-cell *matHeaderCellDef> {{ "Address" | translate | uppercase}} </th>
-        <td mat-cell *matCellDef="let row">
-            <mat-form-field appearance="legacy" *ngIf="row.editable==true; else renderAddress">
-                <mat-label>{{"Address" | translate}}</mat-label>
-                <input matInput formControlName="address"/>
-                <mat-hint>{{ "In upper case" | translate}}</mat-hint>
-            </mat-form-field>
-            <ng-template #renderAddress>
-                <span>{{row.address}}</span>
-            </ng-template>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="Phones">
-        <th mat-header-cell *matHeaderCellDef> {{ "Phones" | translate | uppercase }} </th>
-        <td mat-cell *matCellDef="let row">
-            <mat-form-field appearance="legacy" *ngIf="row.editable==true; else renderPhone">
-                <mat-label>{{"Phone number" | translate}}</mat-label>
-                <input matInput formControlName="phone"/>
-                <mat-hint>{{ "Ex: (+237) 254-664-454" | translate}}</mat-hint>
-            </mat-form-field>
-            <ng-template #renderPhone>
-                <span>{{row.phone}}</span>
-            </ng-template>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="Email">
-        <th mat-header-cell *matHeaderCellDef> {{ "Email" | translate | uppercase }} </th>
-        <td mat-cell *matCellDef="let row">
-            <mat-form-field appearance="legacy" *ngIf="row.editable==true; else renderEmail">
-                <mat-label>{{"Email" | translate}}</mat-label>
-                <input matInput formControlName="email"/>
-                <mat-hint>{{ "Valid email" | translate}}</mat-hint>
-            </mat-form-field>
-            <ng-template #renderEmail>
-                <span>{{row.email}}</span>
-            </ng-template>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="gender">
-        <th mat-header-cell *matHeaderCellDef> {{ "Gender" | translate | uppercase }}  </th>
-        <td mat-cell *matCellDef="let row">
-            <mat-form-field appearance="legacy" *ngIf="row.editable==true; else renderGender">
-                <mat-label>{{"Gender" | translate}}</mat-label>
-                <mat-select formControlName="gender">
-                    <mat-option *ngFor="let gender of genderList" [value]="gender.value">{{gender.name}}</mat-option>
-                </mat-select>
-            </mat-form-field>
-            <ng-template #renderGender>
-                <span>{{row.gender}}</span>
-            </ng-template>
-        </td>
-      </ng-container>
-      <ng-container matColumnDef="command">
-        <th class="command-column" mat-header-cell *matHeaderCellDef>
-          <button type="button" color="primary" mat-icon-button [disabled]="inEditionMode==true" (click)="addCustomerToArray()">
-            <mat-icon class="mat-18">add</mat-icon>
-            {{ "Add a new Customer" | translate }}
-          </button>
-        </th>
-        <td class="command-column" mat-cell *matCellDef="let row">
-            <span  *ngIf="row.editable==true then editionCommand; else renderEditBtn"></span>
-            <ng-template #editionCommand>
-              <span  *ngIf="row.id!=null then updateCommand; else renderCreateBtn"></span>
-              <ng-template #updateCommand>
-                <button type="button" [disabled]="customerEditorFormGroup.valid==false" mat-icon-button (click)="saveEditedCustomer(row)">
-                  <mat-icon class="mat-18">save</mat-icon>
-                  {{ "Save" | translate }}
-                </button>
-                <button type="button" mat-icon-button (click)="deleteCustomer(row)">
-                  <mat-icon class="mat-18">edit</mat-icon>
-                  {{ "Delete" | translate }}
-                </button>
-              </ng-template>
-              <ng-template #renderCreateBtn>
-                <button type="button" [disabled]="customerEditorFormGroup.valid==false" mat-icon-button (click)="saveEditedCustomer(row)">
-                  <mat-icon class="mat-18">save</mat-icon>
-                  {{ "Add" | translate }}
-                </button>
-                <button *ngIf="row.id==null" type="button" mat-icon-button (click)="deleteCustomer(row)">
-                  <mat-icon class="mat-18">edit</mat-icon>
-                  {{ "Abandon" | translate }}
-                </button>
-              </ng-template>
-              
-            </ng-template>        
-            <ng-template #renderEditBtn>
-                <button type="button" [disabled]="customerEditorFormGroup.valid==false" mat-icon-button (click)="editCustomer(row)">
-                    <mat-icon class="mat-18">edit</mat-icon>
-                    {{ "Update" | translate }}
-                </button>
-                <button type="button" mat-icon-button (click)="deleteCustomer(row)">
-                  <mat-icon class="mat-18">edit</mat-icon>
-                  {{ "Delete" | translate }}
-                </button>
-            </ng-template>
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>{{ "Manage your customers" | translate | uppercase}}</mat-card-title>
+  </mat-card-header>
+  <mat-divider></mat-divider>
+  <mat-card-content class="container-fluid">
+    <div class="row">
+        <mat-form-field  appearance="legacy" >
+            <mat-label>{{"Search a customer" | translate}}</mat-label>
+            <input matInput name="text" [formControl]="searchControl"/>
+            <i matSuffix class="bi bi-search"></i>
+        </mat-form-field>       
+    </div>
+    <div>
+      <div class="mat-elevation-z3 table-container">
+        <form [formGroup]="customerEditorFormGroup">
+          <table mat-table [dataSource]="datas" class="entity-table">
+            <tr mat-header-row *matHeaderRowDef="tableColumns" ></tr>
+            <tr mat-row *matRowDef="let row; columns: tableColumns;" ></tr>
             
-        </td>
-      </ng-container>
-      <tfoot>
-        <mat-paginator [pageSizeOptions]="[15,20,25,30]"></mat-paginator>
-      </tfoot>
-    </table>
-  </form>
-</div>
+            <ng-container matColumnDef="Code">
+              <th mat-header-cell *matHeaderCellDef> {{ "Code" | translate  | uppercase}} </th>
+              <td mat-cell *matCellDef="let row;">
+                  <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderCode">
+                      <mat-label>{{"Code" | translate}}</mat-label>
+                      <input matInput name="code" formControlName="code"/>
+                      <mat-hint>{{ "In upper case" | translate}}</mat-hint>
+                      <mat-error *ngIf="customerEditorFormGroup.get('code')?.hasError('required')" >{{ "Code is required " | translate}}</mat-error>
+                      <mat-error *ngIf="!customerEditorFormGroup.get('code')?.hasError('required') && customerEditorFormGroup.get('code')?.hasError('pattern')" >{{ "Code should be in UPPERCASE" | translate}}</mat-error>
+                  </mat-form-field>
+                  <ng-template #renderCode>
+                      <span>{{row.code}}</span>
+                  </ng-template>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="Name">
+              <th mat-header-cell *matHeaderCellDef> {{ "Name" | translate | uppercase}} </th>
+              <td mat-cell *matCellDef="let row">
+                  <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderName">
+                      <mat-label>{{"Name" | translate}}</mat-label>
+                      <input matInput name="name" formControlName="name" />
+                      <mat-hint>{{ "In upper case" | translate}}</mat-hint>
+                      <mat-error *ngIf="customerEditorFormGroup.get('name')?.hasError('required')" >{{ "Name is required " | translate}}</mat-error>
+                      <mat-error *ngIf="!customerEditorFormGroup.get('name')?.hasError('required') && customerEditorFormGroup.get('name')?.hasError('pattern')" >{{ "Name should be in UPPERCASE" | translate}}</mat-error>
+                  </mat-form-field>
+                  <ng-template #renderName>
+                      <span>{{row.name}}</span>
+                  </ng-template>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="Address">
+              <th mat-header-cell *matHeaderCellDef> {{ "Address" | translate | uppercase}} </th>
+              <td mat-cell *matCellDef="let row">
+                  <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderAddress">
+                      <mat-label>{{"Address" | translate}}</mat-label>
+                      <input matInput formControlName="address"/>
+                      <mat-hint>{{ "In upper case" | translate}}</mat-hint>
+                      <mat-error *ngIf="customerEditorFormGroup.get('address')?.hasError('required')" >{{ "Address is required " | translate}}</mat-error>
+                      <mat-error *ngIf="!customerEditorFormGroup.get('address')?.hasError('required') && customerEditorFormGroup.get('address')?.hasError('pattern')" >{{ "Address should be in UPPERCASE" | translate}}</mat-error>
+                  </mat-form-field>
+                  <ng-template #renderAddress>
+                      <span>{{row.address}}</span>
+                  </ng-template>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="Phones">
+              <th mat-header-cell *matHeaderCellDef> {{ "Phones" | translate | uppercase }} </th>
+              <td mat-cell *matCellDef="let row">
+                  <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderPhone">
+                      <mat-label>{{"Phone number" | translate}}</mat-label>
+                      <input matInput formControlName="phone"/>
+                      <mat-hint>{{ "Ex1: +237 254-664-454 ; Ex2: 254664454 " | translate}}</mat-hint>
+                      <mat-error  *ngIf="customerEditorFormGroup.get('phone')?.hasError('pattern')"  >{{ "You should enter a valid phone number" | translate}}</mat-error>
+                  </mat-form-field>
+                  <ng-template #renderPhone>
+                      <span>{{row.phone}}</span>
+                  </ng-template>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="Email">
+              <th mat-header-cell *matHeaderCellDef> {{ "Email" | translate | uppercase }} </th>
+              <td mat-cell *matCellDef="let row">
+                  <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderEmail">
+                      <mat-label>{{"Email" | translate}}</mat-label>
+                      <input matInput formControlName="email"/>
+                      <mat-hint>{{ "Ex: meals@gmail.com" | translate}}</mat-hint>
+                      <mat-error  *ngIf="customerEditorFormGroup.get('email')?.hasError('email')"  >{{ "You should enter a valid email" | translate}}</mat-error>
+                  </mat-form-field>
+                  <ng-template #renderEmail>
+                      <span>{{row.email}}</span>
+                  </ng-template>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="gender">
+              <th mat-header-cell *matHeaderCellDef> {{ "Gender" | translate | uppercase }}  </th>
+              <td mat-cell *matCellDef="let row">
+                  <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderGender">
+                      <mat-label>{{"Gender" | translate}}</mat-label>
+                      <mat-select formControlName="gender">
+                          <mat-option *ngFor="let gender of genderList" [value]="gender.value">{{gender.name}}</mat-option>
+                      </mat-select>
+                  </mat-form-field>
+                  <ng-template #renderGender>
+                      <span>{{row.gender}}</span>
+                  </ng-template>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="command">
+              <th class="command-column " mat-header-cell *matHeaderCellDef>
+                <button class="btn btn-primary" type="button" color="primary" mat-icon-button [disabled]="inEditionMode==true" (click)="addCustomerToArray()">
+                  <i class="bi bi-person-plus"></i> {{ "New customer" | translate }}
+                </button>
+              </th>
+              <td class="command-column" mat-cell *matCellDef="let row">
+                  <span  *ngIf="row.editable==true then editionCommand; else renderEditBtn"></span>
+                  <ng-template #editionCommand>
+                    <span  *ngIf="row.id!=null then updateCommand; else renderCreateBtn"></span>
+                    <ng-template #updateCommand>
+                      <button class="btn btn-success" type="button" [disabled]="customerEditorFormGroup.valid==false" mat-icon-button (click)="saveEditedCustomer(row)">
+                        <i class="bi bi-check-square-fill"></i>
+                        {{ "Save" | translate }}
+                      </button>
+                      <button class="btn btn-danger" type="button" mat-icon-button (click)="deleteCustomer(row)">
+                        <i class="bi bi-file-excel-fill"></i>
+                        {{ "Delete" | translate }}
+                      </button>
+                    </ng-template>
+                    <ng-template #renderCreateBtn>
+                      <button class="btn btn-info" type="button" [disabled]="customerEditorFormGroup.valid==false" mat-icon-button (click)="saveEditedCustomer(row)">
+                        <i class="bi bi-file-plus-fill"></i>
+                        {{ "Add" | translate }}
+                      </button>
+                      <button class="btn btn-warning" *ngIf="row.id==null" type="button" mat-icon-button (click)="deleteCustomer(row)">
+                        <i class="bi bi-dash-square-fill"></i>
+                        {{ "Abandon" | translate }}
+                      </button>
+                    </ng-template>
+                    
+                  </ng-template>        
+                  <ng-template #renderEditBtn>
+                      <button class="btn btn-primary" type="button" mat-icon-button (click)="editCustomer(row)">
+                        <i class="bi bi-pencil-square"></i>
+                          {{ "Update" | translate }}
+                      </button>
+                      <button class="btn btn-danger" type="button" mat-icon-button (click)="deleteCustomer(row)">
+                        <i class="bi bi-file-excel-fill"></i>
+                        {{ "Delete" | translate }}
+                      </button>
+                  </ng-template>
+                  
+              </td>
+            </ng-container>
+          </table>
+          <mat-paginator showFirstLastButtons hidePageSize="false"
+                        (page)="pageChanged($event)"
+                        [length]="totalElements"
+                        [pageSize]="pageSize"
+                        [pageSizeOptions]="pageSizeOptions">
+          </mat-paginator>
+        </form>
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

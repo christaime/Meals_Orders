@@ -16,6 +16,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { CustomersService } from './customers.service';
 import { FakeServerService } from 'src/app/test/fake-server.service';
+import { MatCardModule } from '@angular/material/card';
+import { MatDividerModule } from '@angular/material/divider';
 
 
 @NgModule({
@@ -33,15 +35,9 @@ import { FakeServerService } from 'src/app/test/fake-server.service';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    TranslateModule.forRoot({
-      loader: {
-         provide: TranslateLoader,
-         useFactory: (httpClient:HttpClient)=>{
-           return new TranslateHttpLoader(httpClient,"./assets/i18n/",".json");
-         },
-         deps: [HttpClient]
-      }
-    }),
+    MatCardModule,
+    MatDividerModule,
+    TranslateModule,
     CustomersRoutingModule
   ],
   providers: [
