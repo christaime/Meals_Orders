@@ -1,10 +1,10 @@
 # Meals_Orders
 
-![alt text](https://github.com/christaime/Meals_Orders/blob/master/doc/images/Menu.png?raw=true)
+![Menu image](https://github.com/christaime/Meals_Orders/blob/master/doc/images/Menu.png?raw=true)
 
 
 
-![alt text](https://github.com/christaime/Meals_Orders/blob/master/doc/images/customer-list.png?raw=true)
+![Customer list ](https://github.com/christaime/Meals_Orders/blob/master/doc/images/customer-list.png?raw=true)
 
 
-![alt text](https://github.com/christaime/Meals_Orders/blob/master/doc/images/order-edition.png?raw=true)
+![Order edition](https://github.com/christaime/Meals_Orders/blob/master/doc/images/order-edition.png?raw=true)
