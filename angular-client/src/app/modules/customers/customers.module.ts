@@ -18,6 +18,7 @@ import { CustomersService } from './customers.service';
 import { FakeServerService } from 'src/app/test/fake-server.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 
 
 @NgModule({
@@ -41,7 +42,12 @@ import { MatDividerModule } from '@angular/material/divider';
     CustomersRoutingModule
   ],
   providers: [
-    {provide: CustomersService, useClass: FakeServerService}
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 36000}},
+    {provide: CustomersService, useFactory: (httpClient: HttpClient)=>{
+      let service = new FakeServerService(httpClient);
+      service.type = "customers";
+      return service;
+    },deps:[HttpClient] }
   ]
 })
 export class CustomersModule { }

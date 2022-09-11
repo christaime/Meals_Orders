@@ -2,3 +2,29 @@
     font-size: 1em;
     margin-right: 5px;
 }
+
+.editor-container .row{
+    margin-top: 1em;
+}
+
+.mat-form-field {
+    font-size: 13px;
+}
+
+.mat-option-renderer{
+    font-size: 12px;
+    height: 58px;
+    line-height: 20px;
+}
+
+.mat-option-renderer .badge{
+    font-size: 12px;
+}
+
+.save-btn {
+    font-size: 10.5px;
+}
+
+.item-amount {
+    margin-top: 5px;
+}

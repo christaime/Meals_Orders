@@ -21,6 +21,7 @@ export class OrderItem extends Persistable{
   itemId!: string;
   price!: string;
   quantity!: number;
+  tmpId?: string;
 }
 
 export enum OrderStatus{

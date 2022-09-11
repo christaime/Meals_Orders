@@ -23,7 +23,7 @@ export class HttpServiceService<T extends Persistable>{
   }
 
   getBaseUrl(){
-    return this.getContextPath()+"/customers";
+    return this.getContextPath();
   }
 
   getSaveUrl(): string {

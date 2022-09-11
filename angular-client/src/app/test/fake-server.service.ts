@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Filter, HttpServiceService, ResponsePage } from '../common/http-service.service';
 import { Customer, Gender } from '../model/customer';
+import { Item } from '../model/items';
 
 @Injectable({
   providedIn: 'root'
@@ -11,18 +12,29 @@ export class FakeServerService extends HttpServiceService<any>{
 
   autoIncrement = 0;
   customers: any[] = [];
+  items: any[] = [];
+
+  public type: string="";
 
   constructor(httpClient:HttpClient) { 
     super(httpClient);
     console.log("FakeServerService",this);
-    this.initDats();
+    this.initCustomers();
+    this.initItems();
   }
 
+  override getBaseUrl(): string {
+    return this.getContextPath()+'/'+this.type;
+  }
   override save(data: any): Observable<any> {
     console.log("save",this.getSaveUrl(),data);
-    if(this.getSaveUrl().indexOf("customers") != -1){
+    if(this.type == "customers"){
       data.id = ++this.autoIncrement +'';
       this.customers.push(data);
+      return of(data);
+    } else if(this.type == "items"){
+      data.id = ++this.autoIncrement +'';
+      this.items.push(data);
       return of(data);
     }
     return this.save(data);
@@ -30,17 +42,46 @@ export class FakeServerService extends HttpServiceService<any>{
 
   override search(filter: Filter): Observable<ResponsePage> {
     console.log("search",this.getSearchUrl(),filter);
-    if(this.getSearchUrl().indexOf("customers") != -1){
+    if(this.type == "customers"){
       let response = new ResponsePage();
-      response.content = this.customers;
+      let flteredList = this.customers.filter( (el)=> {
+        if((filter as any)['code']!=null){
+          return (filter as any)['code'].trim()=='' || el.code.toUpperCase().startsWith((filter as any)['code'].trim().toUpperCase());
+        }else if((filter as any)['name']!=null){
+          return (filter as any)['name'].trim()=='' || el.name.toUpperCase().startsWith((filter as any)['name'].trim().toUpperCase());
+        } else {
+          return true;
+        }
+      });
+      console.log({flteredList});
+      let start = filter.page*(filter.pageSize? filter.pageSize:0);
+      response.content = filter.page != null? flteredList.slice(start,start+(filter.pageSize? filter.pageSize:0)) : flteredList;
       response.number = 1;
-      response.totalElements = this.customers.length;
+      response.totalElements = flteredList.length;
+      return of(response);
+    } else if(this.type == "items"){
+      let response = new ResponsePage();
+      let flteredList = this.items.filter( (el)=> {
+        if((filter as any)['code']!=null){
+          return (filter as any)['code'].trim()=='' || el.code.toUpperCase().startsWith((filter as any)['code'].trim().toUpperCase());
+        }else if((filter as any)['description']!=null){
+          return (filter as any)['description'].trim()=='' || el.description.toUpperCase().startsWith((filter as any)['description'].trim().toUpperCase());
+        } else {
+          return true;
+        }
+      });
+      console.log({flteredList});
+      let start = filter.page*(filter.pageSize? filter.pageSize:0);
+      response.content = filter.page != null? flteredList.slice(start,start+(filter.pageSize? filter.pageSize:0)) : flteredList;
+      response.number = 1;
+      response.totalElements = flteredList.length;
+      
       return of(response);
     }
     return this.search(filter);
   }
 
-  public initDats(){
+  public initCustomers(){
     let customerId = 1;
     let customer = new Customer("JHJHJHJ","Alfred Hitlang");
     customer.id = "" + (customerId++);
@@ -71,5 +112,40 @@ export class FakeServerService extends HttpServiceService<any>{
     customer3.gender = Gender[Gender.FEMALE];
 
     this.customers = [customer, customer1, customer2, customer3];
+  }
+
+  public initItems(){
+    let itemId = 0;
+    let item = new Item();
+    item.code = "HGHHGH";
+    item.description = "Beignets haricots";
+    item.price = "500";
+    item.id = "" + (++itemId);
+
+    let item1 = new Item();
+    item1.code = "UIOO014";
+    item1.description = "Okok manioc";
+    item1.price = "700";
+    item1.id = "" + (++itemId);
+
+    let item2 = new Item();
+    item2.code = "UIOVG4";
+    item2.description = "Riz sauce tomate";
+    item2.price = "1500";
+    item2.id = "" + (++itemId);
+
+    let item3 = new Item();
+    item3.code = "UIO784";
+    item3.description = "Poisson braisé";
+    item3.price = "1200";
+    item3.id = "" + (++itemId);
+
+    let item4 = new Item();
+    item4.code = "UIO784";
+    item4.description = "Poisson braisé";
+    item4.price = "1200";
+    item4.id = "" + (++itemId);
+
+    this.items = [item, item1, item2, item3, item4];
   }
 }

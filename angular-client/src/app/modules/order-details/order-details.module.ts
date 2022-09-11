@@ -19,6 +19,10 @@ import { ItemsService } from '../items/items.service';
 import { FakeServerService } from 'src/app/test/fake-server.service';
 import { CustomersService } from '../customers/customers.service';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { HttpClient } from '@angular/common/http';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [
@@ -39,11 +43,22 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatNativeDateModule, 
     MatMomentDateModule,
     MatTooltipModule,
+    MatTableModule,
+    MatPaginatorModule,
     OrderDetailsRoutingModule
   ],
   providers: [
-    {provide: ItemsService, useClass: FakeServerService},
-    {provide: CustomersService, useClass: FakeServerService}
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 36000}},
+    {provide: ItemsService, useFactory: (httpClient: HttpClient)=>{
+        let service = new FakeServerService(httpClient);
+        service.type = "items";
+        return service;
+      },deps:[HttpClient] },
+    {provide: CustomersService, useFactory: (httpClient: HttpClient)=>{
+      let service = new FakeServerService(httpClient);
+      service.type = "customers";
+      return service;
+    },deps:[HttpClient] }
   ]
 })
 export class OrderDetailsModule { }

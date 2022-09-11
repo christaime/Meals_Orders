@@ -1,0 +1,28 @@
+
+.table-container{
+    overflow: scroll;
+}
+
+table {
+    width: 100%;
+    min-width: 50em;
+}
+
+.command-column{
+    width: 8em;
+}
+
+table.entity-table button.btn {
+    font-size: smaller;
+    margin-right: 2px;
+    height: 2.5em;
+}
+
+.mat-card-header-text {
+    width: 100%!important;
+}
+
+.mat-card-actions{
+    position: relative;
+    left: 90%;
+}

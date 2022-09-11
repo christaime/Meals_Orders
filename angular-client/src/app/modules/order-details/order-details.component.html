@@ -1,9 +1,77 @@
-<mat-card>
-    <mat-card-header>
-      <mat-card-title>{{ "Manage an order" | translate | uppercase}}</mat-card-title>
+<mat-card >
+    <mat-card-header >
+      <mat-card-title >
+          <div class="float-start d-none d-sm-block">{{ "Manage an order" | translate | uppercase}}</div>
+          <div class="float-end float-sm-none" style="right: 2em; position: fixed;">{{ "Total amount:" | translate | uppercase}}  
+            <span class="badge rounded-pill bg-dark mat-elevation-z2">{{totalAmount | currency:currency:'symbol':'.2-2'}}</span> 
+          </div>          
+      </mat-card-title>
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content >     
-        <app-order-item-editor></app-order-item-editor>
+        <app-order-item-editor (saveItem)="saveItem($event)" (orderChanged)="editOrder($event)" [item]="itemToEdit" [currency]="currency" ></app-order-item-editor>
+        <div class="table-container">
+          <table mat-table [dataSource]="orderItems" class="entity-table">
+            <tr mat-header-row *matHeaderRowDef="tableColumns" ></tr>
+            <tr mat-row *matRowDef="let row; columns: tableColumns;" ></tr>
+            
+            <ng-container matColumnDef="code">
+              <th mat-header-cell *matHeaderCellDef> {{ "Item code" | translate  | uppercase}} </th>
+              <td mat-cell *matCellDef="let row;">
+                    <span>{{row.itemCode}}</span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef> {{ "Item name" | translate | uppercase}} </th>
+              <td mat-cell *matCellDef="let row">                
+                      <span>{{row.itemName}}</span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="price">
+              <th mat-header-cell *matHeaderCellDef> {{ "Price" | translate | uppercase}} </th>
+              <td mat-cell *matCellDef="let row">               
+                      <span>{{row.price | currency:currency:'symbol':'.2-2'}}</span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="quantity">
+              <th mat-header-cell *matHeaderCellDef> {{ "Quantity" | translate | uppercase }} </th>
+              <td mat-cell *matCellDef="let row">
+                  <span>{{row.quantity}}</span>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="amount">
+              <th mat-header-cell *matHeaderCellDef> {{ "Amount" | translate | uppercase }} </th>
+              <td mat-cell *matCellDef="let row">
+                  <span>{{row.amount | currency:currency:'symbol':'.2-2'}}</span>
+              </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="command">
+              <th class="command-column" mat-header-cell *matHeaderCellDef>
+                
+              </th>
+              <td class="command-column" mat-cell *matCellDef="let row">
+                <button class="btn btn-danger" type="button" mat-icon-button (click)="deleteItem(row)">
+                  <i class="bi bi-file-excel-fill"></i>
+                  {{ "Delete" | translate }}
+                </button>
+              </td>
+            </ng-container>
+          </table>
+          <mat-paginator showFirstLastButtons hidePageSize="false"
+                        (page)="pageChanged($event)"
+                        [length]="totalElements"
+                        [pageSize]="pageSize"
+                        [pageSizeOptions]="pageSizeOptions">
+          </mat-paginator>
+       </div>
     </mat-card-content>
+    <mat-card-footer>
+      <mat-divider></mat-divider>
+      <mat-card-actions class="mat-card-actions">
+          <button type="button" (click)="saveOrder()"  mat-raised-button class="btn btn-primary mat-elevation-z2" 
+           [disabled]="!(order != null && order.customerId != null && orderItems.length >0)" 
+          >{{ "Save Order "| translate}}</button>
+      </mat-card-actions>
+    </mat-card-footer>
 </mat-card>

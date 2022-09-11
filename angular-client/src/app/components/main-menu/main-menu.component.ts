@@ -1,5 +1,6 @@
-import { BooleanInput } from '@angular/cdk/coercion';
+
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import { RoutesMapping } from 'src/app/app-routing.module';
 
 @Component({
@@ -15,8 +16,12 @@ export class MainMenuComponent implements OnInit {
   currentLink!: string;
 
   constructor() { 
+    console.log( window.location.href );
+    
     this.brandLink = RoutesMapping.home;
-    this.currentLink = RoutesMapping.home;
+    let index = window.location.href.indexOf('#');
+    this.currentLink =  index != -1 ? window.location.href.substring(index+2).split('/')[0] : RoutesMapping.home;
+    console.log({index},this.currentLink);
     this.appMenuList = [
       {route:RoutesMapping.home, title: "Home"},
       {route:RoutesMapping.customers, title: "Customers"},
@@ -28,10 +33,11 @@ export class MainMenuComponent implements OnInit {
         ]  
       }
     ];
+    
   }
 
   ngOnInit(): void {
-
+    
   }
 
 }

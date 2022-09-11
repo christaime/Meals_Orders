@@ -100,8 +100,9 @@ export class CustomersComponent implements OnInit {
 
   editCustomer(row:Customer){
     console.log("editCustomer",row);
-    if(this.inEditionMode == true){
+    if(row.id != null){
       this.customerEditorFormGroup.markAsTouched();
+      this.customerEditorFormGroup.updateValueAndValidity();
     }
     if(this.inEditionMode == true && !this.customerEditorFormGroup.valid){
       // ask to complete edition
