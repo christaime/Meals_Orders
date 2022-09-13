@@ -52,16 +52,23 @@ export class CustomersComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    
+      this.search();
+      this.searchControl.valueChanges.subscribe( (val)=>{
+        this.search(val);
+      });    
+  }
+
+  search(text?:string){
+    this.filter.text = text;
     this.service.search(this.filter).subscribe( {
-        next: (page:ResponsePage)=>{
-          this.datas = page.content? page.content : [];
-          this.totalElements = page.totalElements;
-        },
-        error: (er)=>{
-          this.notification.error("Fail to load customers");
-        }
-    })
+      next: (page:ResponsePage)=>{
+        this.datas = page.content? page.content : [];
+        this.totalElements = page.totalElements;
+      },
+      error: (er)=>{
+        this.notification.error("Fail to load customers");
+      }
+  });
   }
 
   addCustomerToArray(){

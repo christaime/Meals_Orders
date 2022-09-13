@@ -13,6 +13,7 @@ export class FakeServerService extends HttpServiceService<any>{
   autoIncrement = 0;
   customers: any[] = [];
   items: any[] = [];
+  orders: any[] = [];
 
   public type: string="";
 
@@ -29,13 +30,17 @@ export class FakeServerService extends HttpServiceService<any>{
   override save(data: any): Observable<any> {
     console.log("save",this.getSaveUrl(),data);
     if(this.type == "customers"){
-      data.id = ++this.autoIncrement +'';
-      this.customers.push(data);
-      return of(data);
+      let dataSaved = {id:++this.autoIncrement +'',...data};
+      this.customers.push(dataSaved);
+      return of(dataSaved);
     } else if(this.type == "items"){
-      data.id = ++this.autoIncrement +'';
-      this.items.push(data);
-      return of(data);
+      let dataSaved = {id:++this.autoIncrement +'',...data};
+      this.items.push(dataSaved);
+      return of(dataSaved);
+    }else if(this.type == "orders"){
+      let dataSaved = {id:++this.autoIncrement +'',...data};
+      this.orders.push(dataSaved);
+      return of(dataSaved);
     }
     return this.save(data);
   }
@@ -49,6 +54,11 @@ export class FakeServerService extends HttpServiceService<any>{
           return (filter as any)['code'].trim()=='' || el.code.toUpperCase().startsWith((filter as any)['code'].trim().toUpperCase());
         }else if((filter as any)['name']!=null){
           return (filter as any)['name'].trim()=='' || el.name.toUpperCase().startsWith((filter as any)['name'].trim().toUpperCase());
+        }else if((filter as any)['text']!=null){
+          return (filter as any)['text'].trim()=='' 
+                || el.code.toUpperCase().startsWith((filter as any)['text'].trim().toUpperCase())
+                || el.name.toUpperCase().startsWith((filter as any)['text'].trim().toUpperCase())
+                || el.address.toUpperCase().startsWith((filter as any)['text'].trim().toUpperCase());
         } else {
           return true;
         }

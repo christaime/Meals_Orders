@@ -18,7 +18,8 @@ import { HomeComponent } from './components/home/home.component';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
 import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import { OverlayModule } from '@angular/cdk/overlay';
+import { FullscreenOverlayContainer, OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
+import { LoaderComponent } from './common/loader/loader.component';
 
 registerLocaleData(frLocale);
 registerLocaleData(enLocale);
@@ -28,7 +29,8 @@ registerLocaleData(enLocale);
     AppComponent,
     MainMenuComponent,
     FooterComponent,
-    HomeComponent
+    HomeComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,
@@ -52,7 +54,8 @@ registerLocaleData(enLocale);
     BrowserAnimationsModule
   ],
   providers: [
-    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 36000}}
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3600,verticalPosition:"top"}},
+    {provide: OverlayContainer, useClass: FullscreenOverlayContainer}
   ],
   bootstrap: [AppComponent]
 })

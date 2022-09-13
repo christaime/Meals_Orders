@@ -21,6 +21,7 @@ export class OrderItem extends Persistable{
   itemId!: string;
   price!: string;
   quantity!: number;
+  orderId!: string;
   tmpId?: string;
 }
 

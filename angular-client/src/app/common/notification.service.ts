@@ -4,6 +4,7 @@ import { Injectable } from '@angular/core';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import { LoaderComponent } from './loader/loader.component';
 
 @Injectable({
   providedIn: 'root'
@@ -19,30 +20,36 @@ export class NotificationService {
 
   info(text: string) {
     this.translate.get(text).subscribe( (translatedText)=>{
-      this.snackBar.open(translatedText,"X",{panelClass:"bg-success text-white text-wrap"});
+      this.snackBar.open(translatedText,"X",{panelClass:["bg-success","text-white", "text-wrap"]});
     });    
   }
 
   warning(text: string) {
     this.translate.get(text).subscribe( (translatedText)=>{
-      this.snackBar.open(translatedText,"X",{panelClass:"bg-warning text-wrap"});
+      this.snackBar.open(translatedText,"X",{panelClass:["bg-warning" ,"text-wrap"]});
     });   
   }
 
   error(text: string) {
     this.translate.get(text).subscribe( (translatedText)=>{
-      this.snackBar.open(translatedText,"X",{panelClass:"bg-danger text-white text-wrap"});
+      this.snackBar.open(translatedText,"X",{panelClass:["bg-danger","text-white", "text-wrap"]});
     });  
   }
 
   longProcessOngoing(state:boolean){
     if(state == true){
-      this.overlayRef = this.overlay.create();
-      const spinnerProgress = new ComponentPortal(MatProgressSpinner);
+      const positionStrategy = this.overlay.position().global().centerHorizontally().centerVertically();
+      this.overlayRef = this.overlay.create({
+        hasBackdrop: true,
+        positionStrategy
+      });
+      const spinnerProgress = new ComponentPortal(LoaderComponent);
       this.overlayRef.attach(spinnerProgress);
     } else {
-      this.overlayRef.detach();
-      this.overlayRef.dispose();
+      if(this.overlayRef!=null){
+        this.overlayRef.detach();
+        this.overlayRef.dispose();
+      }
     }
   }
 }

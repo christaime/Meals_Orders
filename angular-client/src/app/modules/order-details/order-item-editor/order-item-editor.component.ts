@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { Filter, ResponsePage } from 'src/app/common/http-service.service';
+import { NotificationService } from 'src/app/common/notification.service';
 import { Customer } from 'src/app/model/customer';
 import { Item } from 'src/app/model/items';
 import { Order, OrderItem, OrderStatus, PaymantStatus } from 'src/app/model/order';
@@ -17,7 +18,7 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
 
   @Input() order!: Order;
 
-  @Input() item!: OrderItem;
+  item!: OrderItem;
 
   @Output() saveItem: EventEmitter<OrderItem> = new EventEmitter<OrderItem>();
 
@@ -39,7 +40,7 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
   @Input()
   currency: string = "$";
 
-  constructor(private customerService: CustomersService, private itemService: ItemsService) { 
+  constructor(private customerService: CustomersService, private itemService: ItemsService, private notification: NotificationService) { 
     this.order = new Order();
     this.item = new OrderItem();
     this.orderEditor = new FormGroup({
@@ -68,13 +69,14 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
       this.itemFormEditor.patchValue(this.item);
     }
     if(changes["order"]){
-      this.orderEditor.patchValue(this.order);
+      this.orderEditor.patchValue(this.order,{onlySelf:true, emitEvent:false});
     }
   }
 
   ngOnInit(): void {  
      
     this.orderEditor.valueChanges.subscribe( (orderValue)=>{
+      console.log("orderEditor.valueChanges",orderValue);
       if(this.orderEditor.valid==true){
         let order = {...orderValue};
         order.customerId = this.customerSelected?.id;
@@ -216,13 +218,32 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
       let quantity = parseFloat(item.quantity? item.quantity:0);
       let amount = (price!=NaN? price: 0) * (quantity!=NaN? quantity:0);
       item.amount = amount;
+      if(this.orderEditor.valid!=true){
+        this.notification.error("invalid order");
+        this.orderEditor.markAllAsTouched();
+        this.orderEditor.markAsDirty();
+        this.orderEditor.updateValueAndValidity();
+      }else {
+        item.orderId = this.order.id;
+        this.itemService.save(item).subscribe({
+          next: (itemSaved)=>{
+            this.clearItem();
+            this.saveItem.emit(item);
+            this.notification.info("Order item saved");
+          },
+          error: (err)=>{
+            this.notification.error("Item save failed");
+          }
+        })
+        
+      }
     }catch(e){
       console.error(e);
     }
-    this.clearItem();
-    this.saveItem.emit(item);
+    
   }
 
+  // Validators for Persistable
   validEntity(c: FormControl){
     return c.value !=null && typeof c.value !== 'string'? null: {validEntity:{valid:false}};
   }

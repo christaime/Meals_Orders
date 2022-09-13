@@ -23,6 +23,7 @@ import { HttpClient } from '@angular/common/http';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
+import { OrdersService } from '../orders/orders.service';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,6 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
     OrderDetailsRoutingModule
   ],
   providers: [
-    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 36000}},
     {provide: ItemsService, useFactory: (httpClient: HttpClient)=>{
         let service = new FakeServerService(httpClient);
         service.type = "items";
@@ -57,6 +57,11 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
     {provide: CustomersService, useFactory: (httpClient: HttpClient)=>{
       let service = new FakeServerService(httpClient);
       service.type = "customers";
+      return service;
+    },deps:[HttpClient] },
+    {provide: OrdersService, useFactory: (httpClient: HttpClient)=>{
+      let service = new FakeServerService(httpClient);
+      service.type = "orders";
       return service;
     },deps:[HttpClient] }
   ]
