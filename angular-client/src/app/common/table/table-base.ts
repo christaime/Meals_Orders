@@ -1,20 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, UntypedFormControl, Validators } from '@angular/forms';
-import { data } from 'jquery';
-import { Filter, ResponsePage } from 'src/app/common/http-service.service';
-import { NotificationService } from 'src/app/common/notification.service';
-import { Customer, Gender } from 'src/app/model/customer';
-import { CustomersService } from './customers.service';
+import { Component, OnInit } from "@angular/core";
+import { FormControl, FormGroup } from "@angular/forms";
+import { Persistable } from "src/app/model/persistable";
+import { Filter, HttpServiceService, ResponsePage } from "../http-service.service";
+import { NotificationService } from "../notification.service";
 
 @Component({
-  selector: 'app-customers',
-  templateUrl: './customers.component.html',
-  styleUrls: ['./customers.component.css']
+    template: ""
 })
-export class CustomersComponent implements OnInit {
-
-  tableColumns: string[] = ["Code", "Name","Address", "Phones","Email","gender","command"];
-  datas: readonly Customer[] = [];
+export class TableBase<T extends Persistable> implements OnInit{
+  
+  tableColumns: string[] = [];
+  datas: readonly T[] = [];
 
   pageSizeOptions = [5, 10, 25, 100];
   pageSize = this.pageSizeOptions[1];
@@ -23,40 +19,19 @@ export class CustomersComponent implements OnInit {
   filter!: Filter;
 
   inEditionMode: boolean = false;
-  isNewRowEditionMode: boolean = false;
 
-  codeRegEx = /^([A-Z]|[0-9])+$/;
-  nameRegEx = /^([A-Z]|[0-9]|\s|[ŒÉÊÀÇ_È-])+$/;
-  //phoneRegEx = /^([0-9]|(([0-9]{3}((-)*[0-9]{3}))+))+$/;
-  //phoneRegEx=/(^([0-9]{9,12})$)/;
-  phoneRegEx =/^(([0-9]{9,12})|((([\+]?)([0-9]{1,3}))(([\s-]([0-9]{3})){3,4})))$/
-  customerEditorFormGroup = new FormGroup({
-    "id": new FormControl(null),
-    "code": new FormControl('',[Validators.required, Validators.pattern(this.codeRegEx)]),
-    "name": new FormControl('',[Validators.required,Validators.pattern(this.nameRegEx)]),
-    "address": new FormControl('',[Validators.required,Validators.pattern(this.nameRegEx)]),
-    "phone": new FormControl('',[Validators.pattern(this.phoneRegEx)]),
-    "email": new FormControl('',[Validators.email]),
-    "gender": new FormControl('',[]),
-  });
+  entityEditorFormGroup!: FormGroup;
 
   genderList!: {value:string, name:string}[];
 
   searchControl: FormControl  = new FormControl('');
 
-  constructor(private service: CustomersService, private notification: NotificationService) { 
-    this.genderList = [
-      {name:"Female", value: Gender[Gender.FEMALE]},
-      {name:"Male", value: Gender[Gender.MALE]}
-    ];
+  constructor(private service: HttpServiceService<T>, private notification: NotificationService) { 
     this.filter = new Filter();
   }
 
   ngOnInit(): void {
       this.search();
-      /*this.searchControl.valueChanges.subscribe( (val)=>{
-        this.search(val);
-      });  */  
   }
 
   search(text?:string){
@@ -67,56 +42,76 @@ export class CustomersComponent implements OnInit {
         this.totalElements = page.totalElements;
       },
       error: (er)=>{
-        this.notification.error("Fail to load customers");
+        this.notification.error(this.getFailToLoadEntityMessage());
       }
   });
   }
-
-  addCustomerToArray(){
-    console.log("addCustomerToArray");
+   
+  addEntityToArray(){
+    console.log("addEntityToArray");
     if(this.inEditionMode==false){
-      let customer = new Customer();
-      customer.editable = true;
-      this.isNewRowEditionMode = true;
-      this.initCustomerEditorForm(customer);
-      this.datas = [customer].concat(this.datas);
+      let entity = {} as T;
+      entity.editable = true;
+      this.initEntityEditorForm(entity);
+      this.datas = [entity].concat(this.datas);
     }
   }
 
-  saveEditedCustomer(row:any){
-    console.log("saveEditedCustomer",row);
-    let customer = {...row,...this.customerEditorFormGroup.value};
-    customer.editable = false;
+  saveEditedEntity(row:any){
+    console.log("saveEditedEntity",row);
+    let entity = {...row,...this.entityEditorFormGroup.value};
+    entity.editable = false;
     let datas = [...this.datas];
     const index = datas.findIndex((data)=>{ return data.editable == true && data.id === row.id});
     if(index!=-1){  
-      //save the customer on server
-      this.service.save(customer).subscribe({
-        next: (value: Customer)=>{
+      //save the entity on server
+      this.service.save(entity).subscribe({
+        next: (value: T)=>{
           value.editable = false;
           console.log("save value in component ", value);
           datas.splice(index,1,value);
           this.datas = datas;
           this.inEditionMode = false;
-          this.isNewRowEditionMode = false;
-          this.notification.info("Customer sucessfully saved");
+          this.notification.info(this.getSaveSuccedMessage());
         },
         error: (error)=>{
           console.error(error);
-          this.notification.error("Customer save failed");
+          this.notification.error(this.saveFailMessage());
         }
       }) ;    
     }
   }
 
-  editCustomer(row:Customer){
-    console.log("editCustomer",row);
+  /**
+   * To be redefined
+   * @returns 
+   */
+    saveFailMessage(): string {
+        return "Entity saved successfully"
+    }
+    getSaveSuccedMessage(): string {
+        return "fail to save entity"
+    }
+
+    getFailToLoadEntityMessage(): string {
+        return "fail to load entity";
+    }
+
+    getDeleteSucessfullyMessage(): string {
+        return "Entity successfully deleted";
+    }
+    getDeleteFailMessage(): string {
+        return "Fail to delete entity";
+    }
+
+  editEntity(row:T){
+    console.log("editEntity",row);
     if(row.id != null){
-      this.customerEditorFormGroup.markAsTouched();
-      this.customerEditorFormGroup.updateValueAndValidity();
+      this.entityEditorFormGroup.markAsTouched();
+      this.entityEditorFormGroup.updateValueAndValidity();
     }
     let canEdit = true;
-    if(this.inEditionMode == true && !this.customerEditorFormGroup.valid){
+    if(this.inEditionMode == true && !this.entityEditorFormGroup.valid){
       // ask to complete edition
       this.notification.userChoice({choices: [{text:"Ok", value: 1}],
         questionText:" Complete the current line edition! ",
@@ -139,14 +134,14 @@ export class CustomersComponent implements OnInit {
                     datas.splice(index,1);
                     this.datas = datas;
                   }else{
-                    this.saveEditedCustomer(datas[index]);
-                    this.editCustomer(row);
+                    this.saveEditedEntity(datas[index]);
+                    this.editEntity(row);
                   }
               });              
             }else {
               datas[index].editable = false; 
               this.datas = datas;
-              this.editCustomer(row);
+              this.editEntity(row);
             }
             
           }else{
@@ -158,16 +153,16 @@ export class CustomersComponent implements OnInit {
     }
   }
 
-  putRowInEditionState(row:Customer){
+  putRowInEditionState(row:T){
     console.log("putRowInEditionState",row);
         row.editable = true;
-        this.initCustomerEditorForm(row);
+        this.initEntityEditorForm(row);
         this.datas = [...this.datas];
         this.inEditionMode = true;
   }
 
-  deleteCustomer(row: Customer){
-    console.log("deleteCustomer",row);
+  deleteEntity(row: T){
+    console.log("deleteEntity",row);
     let datas = [...this.datas];
     const index = datas.findIndex((data)=>{ return data.editable == true});
     console.log({datas, index});
@@ -180,24 +175,24 @@ export class CustomersComponent implements OnInit {
           next: (res)=>{
             datas.splice(index,1);
             this.datas = datas;
-            this.notification.info("Customer sucessfully deleted");
+            this.notification.info(this.getDeleteSucessfullyMessage());
           },
           error: (err)=>{
             console.error(err);
-            this.notification.error("Customer deletion failed");
+            this.notification.error(this.getDeleteFailMessage());
           }
         });
       }
       
     }
     this.inEditionMode = false;
-  }
+}
 
-  initCustomerEditorForm(customer:Customer){
-    this.customerEditorFormGroup.reset();
+  initEntityEditorForm(entity:T){
+    this.entityEditorFormGroup.reset();
     this.inEditionMode = true;
-    console.log("initCustomerEditorForm",customer);
-    this.customerEditorFormGroup.patchValue(customer as any);    
+    console.log("initEntityEditorForm",entity);
+    this.entityEditorFormGroup.patchValue(entity as any);    
   }
 
   pageChanged(event:any) {

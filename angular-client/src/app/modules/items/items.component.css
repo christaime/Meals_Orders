@@ -1,3 +1,41 @@
 table .mat-form-field{
     font-size: 13px;
 }
+
+.new-item-btn{
+    height: 2.7em;
+    width: 100%;
+}
+
+.table-container{
+    overflow: scroll;
+}
+
+table {
+    width: 100%;
+    min-width: 60em;
+}
+
+table .mat-form-field{
+    width: 98%;
+    font-size: 13px;
+}
+
+.command-column{
+    min-width: 13.5em;
+    width: 13.5em;
+}
+
+table td {
+    font-size: 13px;
+}
+
+table.entity-table button.btn {
+    font-size: smaller;
+    margin-right: 2px;
+    height: 2.5em;
+}
+
+.btn {
+    margin-right: 10px;
+}

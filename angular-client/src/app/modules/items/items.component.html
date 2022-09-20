@@ -1,1 +1,123 @@
-<p>items works!</p>
+<mat-card class="main-card">
+    <mat-card-header>
+      <mat-card-title>{{ "Manage items" | translate | uppercase}}</mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <mat-card-content class="container-fluid">
+      <div class="row">
+          <mat-form-field  appearance="legacy" >
+              <mat-label>{{"Search a item" | translate}}</mat-label>
+              <input matInput name="text" (keydown.enter)="search(searchControl.value)" [formControl]="searchControl"/>
+              <i matSuffix class="bi bi-search"></i>
+          </mat-form-field>       
+      </div>
+      <div>
+        <div class="mat-elevation-z3 table-container">
+          <form [formGroup]="entityEditorFormGroup">
+            <table mat-table [dataSource]="datas" class="entity-table">
+              <tr mat-header-row *matHeaderRowDef="tableColumns" ></tr>
+              <tr mat-row *matRowDef="let row; columns: tableColumns;" ></tr>
+              
+              <ng-container matColumnDef="Code">
+                <th mat-header-cell *matHeaderCellDef> {{ "Code" | translate  | uppercase}} </th>
+                <td mat-cell *matCellDef="let row;">
+                    <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderCode">
+                        <mat-label>{{"Code" | translate}}</mat-label>
+                        <input matInput name="code" formControlName="code"/>
+                        <mat-hint>{{ "In upper case" | translate}}</mat-hint>
+                        <mat-error *ngIf="entityEditorFormGroup.get('code')?.hasError('required')" >{{ "Code is required " | translate}}</mat-error>
+                        <mat-error *ngIf="!entityEditorFormGroup.get('code')?.hasError('required') && entityEditorFormGroup.get('code')?.hasError('pattern')" >{{ "Code should be in UPPERCASE" | translate}}</mat-error>
+                    </mat-form-field>
+                    <ng-template #renderCode>
+                        <span>{{row.code}}</span>
+                    </ng-template>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="Description">
+                <th mat-header-cell *matHeaderCellDef> {{ "Description" | translate | uppercase}} </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderDescription">
+                        <mat-label>{{"Description" | translate}}</mat-label>
+                        <input matInput name="description" formControlName="description" />
+                        <mat-hint>{{ "In upper case" | translate}}</mat-hint>
+                        <mat-error *ngIf="entityEditorFormGroup.get('description')?.hasError('required')" >{{ "Description is required " | translate}}</mat-error>
+                        <mat-error *ngIf="!entityEditorFormGroup.get('description')?.hasError('required') && entityEditorFormGroup.get('description')?.hasError('pattern')" >{{ "Description should be in UPPERCASE" | translate}}</mat-error>
+                    </mat-form-field>
+                    <ng-template #renderDescription>
+                        <span>{{row.description}}</span>
+                    </ng-template>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="price">
+                <th mat-header-cell *matHeaderCellDef> {{ "Price" | translate | uppercase }} </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderPrice">
+                        <mat-label>{{"Item price" | translate}}</mat-label>
+                        <input matInput formControlName="price" type="number"/>
+                        <mat-hint>{{ " " | translate}}</mat-hint>
+                        <mat-error  *ngIf="entityEditorFormGroup.get('price')?.hasError('pattern')"  >{{ "You should enter a valid price" | translate}}</mat-error>
+                    </mat-form-field>
+                    <ng-template #renderPrice>
+                        <span>{{row.price | currency:currency:'symbol':'.2-2'}}</span>
+                    </ng-template>
+                </td>
+              </ng-container>
+              
+              <ng-container matColumnDef="command">
+                <th class="command-column " mat-header-cell *matHeaderCellDef>
+                  <button class=" new-item-btn btn btn-primary mat-elevation-z2" type="button" color="primary" mat-icon-button [disabled]="inEditionMode==true" (click)="addEntityToArray()">
+                    <i class="bi bi-cup-hot-fill"></i>{{ "New item" | translate }}
+                  </button>
+                </th>
+                <td class="command-column" mat-cell *matCellDef="let row">
+                    <span  *ngIf="row.editable==true then editionCommand; else renderEditBtn"></span>
+                    <ng-template #editionCommand>
+                      <span  *ngIf="row.id !==null && row.id!==undefined then updateCommand; else renderCreateBtn"></span>
+                      <ng-template #updateCommand>
+                        <button class="btn btn-success mat-elevation-z2" type="button" [disabled]="entityEditorFormGroup.valid==false" mat-icon-button (click)="saveEditedEntity(row)">
+                          <i class="bi bi-check-square-fill"></i>
+                          {{ "Save" | translate }}
+                        </button>
+                        <button class="btn btn-danger mat-elevation-z2" type="button" mat-icon-button (click)="deleteEntity(row)">
+                          <i class="bi bi-file-excel-fill"></i>
+                          {{ "Delete" | translate }}
+                        </button>
+                      </ng-template>
+                      <ng-template #renderCreateBtn>
+                        <button class=" btn btn-info mat-elevation-z2" type="button" [disabled]="entityEditorFormGroup.valid==false" mat-icon-button (click)="saveEditedEntity(row)">
+                          <i class="bi bi-file-plus-fill"></i>
+                          {{ "Add" | translate }}
+                        </button>
+                        <button class=" btn btn-warning mat-elevation-z2" *ngIf="row.id==null" type="button" mat-icon-button (click)="deleteEntity(row)">
+                          <i class="bi bi-dash-square-fill"></i>
+                          {{ "Abandon" | translate }}
+                        </button>
+                      </ng-template>
+                      
+                    </ng-template>        
+                    <ng-template #renderEditBtn>
+                        <button class="btn btn-primary mat-elevation-z2" type="button" mat-icon-button [disabled]="inEditionMode == true && !entityEditorFormGroup.valid" (click)="editEntity(row)">
+                          <i class="bi bi-pencil-square"></i>
+                            {{ "Update" | translate }}
+                        </button>
+                        <button class="btn btn-danger mat-elevation-z2" type="button" mat-icon-button (click)="deleteEntity(row)">
+                          <i class="bi bi-file-excel-fill"></i>
+                          {{ "Delete" | translate }}
+                        </button>
+                    </ng-template>
+                    
+                </td>
+              </ng-container>
+            </table>
+            <mat-paginator showFirstLastButtons hidePageSize="false"
+                          (page)="pageChanged($event)"
+                          [length]="totalElements"
+                          [pageSize]="pageSize"
+                          [pageSizeOptions]="pageSizeOptions">
+            </mat-paginator>
+          </form>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  

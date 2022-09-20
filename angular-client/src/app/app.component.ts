@@ -33,15 +33,4 @@ export class AppComponent {
 
   }
 
-  public openSnackBar(){
-    //this.snackBar.open("hello!","X",{panelClass:["bg-success","text-white", "text-wrap"]});
-    /*const overlayRef = this.overlay.create({
-      height: '400px',
-      width: '600px',
-    });
-    const userProfilePortal = new ComponentPortal(MatProgressSpinner);
-    overlayRef.attach(userProfilePortal);*/
-    this.toogle=!this.toogle;
-    this.notif.longProcessOngoing(this.toogle);
-  }
 }

@@ -20,6 +20,8 @@ import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/materia
 import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { FullscreenOverlayContainer, OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { LoaderComponent } from './common/loader/loader.component';
+import { ChoicesDialogComponent } from './common/choices-dialog/choices-dialog.component';
+import { MatDialogModule, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 registerLocaleData(frLocale);
 registerLocaleData(enLocale);
@@ -30,7 +32,8 @@ registerLocaleData(enLocale);
     MainMenuComponent,
     FooterComponent,
     HomeComponent,
-    LoaderComponent
+    LoaderComponent,
+    ChoicesDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -42,6 +45,7 @@ registerLocaleData(enLocale);
     MatSnackBarModule,
     MatProgressSpinnerModule,
     OverlayModule,
+    MatDialogModule,
     TranslateModule.forRoot({
       loader: {
          provide: TranslateLoader,

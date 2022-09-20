@@ -7,3 +7,50 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 .bg-dark {
     background-color: #343a40!important;
 }
+
+/**
+* Table customisations
+*/
+
+.mat-row:nth-child(even){
+    background-color: #f8f9fa;
+}
+
+.mat-table thead{
+    background-color: #f8f9fa;
+}
+
+/**
+* Customisation of mat-card
+*/
+.main-card .mat-card-header{
+    background-color: #f8f9fa;
+    padding:5px !important;
+    border-radius: 8px 8px 0px 0px !important;
+}
+  
+.main-card.mat-card{
+    padding: 0px !important;;
+    margin: 15px!important;
+    border: 1px solid #ced4da!important;
+}
+  
+.main-card .mat-card-content{
+    padding:15px !important;
+}
+
+.main-card .mat-card-header .mat-card-title {
+    margin-bottom: 3px!important;
+}
+.main-card .mat-card-header .mat-card-title {
+    font-size: 17px!important;
+}
+
+.main-card .mat-card-title {
+    display: block;
+    margin-bottom: 8px!important;
+}
+.main-card .mat-card-title {
+    font-size: 20px!important;
+    font-weight: 400!important;
+}

@@ -19,6 +19,7 @@ export class FakeServerService extends HttpServiceService<any>{
 
   constructor(httpClient:HttpClient) { 
     super(httpClient);
+    this.autoIncrement = 0;
     console.log("FakeServerService",this);
     this.initCustomers();
     this.initItems();
@@ -29,18 +30,23 @@ export class FakeServerService extends HttpServiceService<any>{
   }
   override save(data: any): Observable<any> {
     console.log("save",this.getSaveUrl(),data);
+    this.autoIncrement++;
     if(this.type == "customers"){
-      let dataSaved = {id:++this.autoIncrement +'',...data};
-      this.customers.push(dataSaved);
-      return of(dataSaved);
+      data.id = this.autoIncrement;
+      data.editable = false;
+      this.customers.push(data);
+      console.log("customer saved",data);
+      return of(data);
     } else if(this.type == "items"){
-      let dataSaved = {id:++this.autoIncrement +'',...data};
-      this.items.push(dataSaved);
-      return of(dataSaved);
+      data.id = this.autoIncrement;
+      data.editable = false;
+      this.items.push(data);
+      return of(data);
     }else if(this.type == "orders"){
-      let dataSaved = {id:++this.autoIncrement +'',...data};
-      this.orders.push(dataSaved);
-      return of(dataSaved);
+      data.id = this.autoIncrement;
+      data.editable = false;
+      this.orders.push(data);
+      return of(data);
     }
     return this.save(data);
   }
@@ -92,30 +98,30 @@ export class FakeServerService extends HttpServiceService<any>{
   }
 
   public initCustomers(){
-    let customerId = 1;
-    let customer = new Customer("JHJHJHJ","Alfred Hitlang");
-    customer.id = "" + (customerId++);
+    this.autoIncrement++;
+    let customer = new Customer("JHJHJHJ","Alfred Hitlang".toUpperCase());
+    customer.id = "" + (this.autoIncrement++);
     customer.phone = "54587854501";
     customer.address = "AD WEST LANE";
     customer.email = "alfred-test@gmail.com";
     customer.gender = Gender[Gender.MALE];
 
-    let customer1 = new Customer("GBVTTRTR","Ingrid Laforge");
-    customer1.id = "" + (customerId++);
+    let customer1 = new Customer("GBVTTRTR","Ingrid Laforge".toUpperCase());
+    customer1.id = "" + (this.autoIncrement++);
     customer1.phone = "695980545";
     customer1.address = "AD WEST LANE";
     customer1.email = "ingrid-test@gmail.com";
     customer1.gender = Gender[Gender.FEMALE];
 
-    let customer2 = new Customer("GBVVVRF","Laurent Boclai");
-    customer2.id = "" + (customerId++);
+    let customer2 = new Customer("GBVVVRF","Laurent Boclai".toUpperCase());
+    customer2.id = "" + (this.autoIncrement++);
     customer2.phone = "9898656666";
     customer2.address = "AD EAST AVENUE";
     customer2.email = "laurent@gmail.com";
     customer2.gender = Gender[Gender.MALE];
 
-    let customer3 = new Customer("TRAFZGZ","Cecile Laforge");
-    customer3.id = "" + (customerId++);
+    let customer3 = new Customer("TRAFZGZ","Cecile Laforge".toUpperCase());
+    customer3.id = "" + (this.autoIncrement++);
     customer3.phone = "656565014";
     customer3.address = "AD EAST AVENUE";
     //customer3.email = "cecile@gmail.com";
@@ -125,36 +131,35 @@ export class FakeServerService extends HttpServiceService<any>{
   }
 
   public initItems(){
-    let itemId = 0;
     let item = new Item();
     item.code = "HGHHGH";
     item.description = "Beignets haricots";
     item.price = "500";
-    item.id = "" + (++itemId);
+    item.id = "" + (++this.autoIncrement);
 
     let item1 = new Item();
     item1.code = "UIOO014";
     item1.description = "Okok manioc";
     item1.price = "700";
-    item1.id = "" + (++itemId);
+    item1.id = "" + (++this.autoIncrement);
 
     let item2 = new Item();
     item2.code = "UIOVG4";
     item2.description = "Riz sauce tomate";
     item2.price = "1500";
-    item2.id = "" + (++itemId);
+    item2.id = "" + (++this.autoIncrement);
 
     let item3 = new Item();
     item3.code = "UIO784";
     item3.description = "Poisson braisé";
     item3.price = "1200";
-    item3.id = "" + (++itemId);
+    item3.id = "" + (++this.autoIncrement);
 
     let item4 = new Item();
     item4.code = "UIO784";
     item4.description = "Poisson braisé";
     item4.price = "1200";
-    item4.id = "" + (++itemId);
+    item4.id = "" + (++this.autoIncrement);
 
     this.items = [item, item1, item2, item3, item4];
   }

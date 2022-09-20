@@ -1,9 +1,12 @@
-import { Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { ConnectionPositionPair, FlexibleConnectedPositionStrategy, Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { Injectable } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { TranslateService } from '@ngx-translate/core';
+import { Observable } from 'rxjs';
+import { ChoicesDialogComponent, IChoicesDialogData, IChoice } from './choices-dialog/choices-dialog.component';
 import { LoaderComponent } from './loader/loader.component';
 
 @Injectable({
@@ -13,7 +16,7 @@ export class NotificationService {
 
   overlayRef!:OverlayRef;
 
-  constructor(private snackBar: MatSnackBar, private translate: TranslateService, private overlay:Overlay) {
+  constructor(private snackBar: MatSnackBar, public dialog: MatDialog, private translate: TranslateService, private overlay:Overlay) {
      
   }
 
@@ -51,5 +54,15 @@ export class NotificationService {
         this.overlayRef.dispose();
       }
     }
+  }
+
+  positionedLoader(state:boolean){
+    
+  }
+
+  public userChoice(data:IChoicesDialogData, dialogSize?:{width?: any, heigth?: any }): Observable<IChoice>{
+    let composedData = {...dialogSize,data:data};
+    let dialogRef = this.dialog.open(ChoicesDialogComponent,composedData);
+    return dialogRef.afterClosed();
   }
 }
