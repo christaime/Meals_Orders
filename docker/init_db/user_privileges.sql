@@ -1,0 +1,1 @@
+GRANT ALL PRIVILEGES ON mealsOrders.* TO 'mealsOrdersUser'@'localhost';

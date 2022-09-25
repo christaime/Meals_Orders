@@ -1,0 +1,26 @@
+version: '3.5'
+
+services:
+  mysql_server:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 'rootSecret'
+      MYSQL_DATABASE: 'mealsOrders'
+      MYSQL_USER: 'mealsOrdersUser'
+      MYSQL_PASSWORD: 'mealsOrdersUserSecret'
+    ports:
+      - 3306:3306
+    volumes:
+      - "./init_db/user_privileges.sql:/docker-entrypoint-initdb.d/1.sql"
+      - "./init_db/create_schema.sql:/docker-entrypoint-initdb.d/2.sql"
+      
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+      - 8086:80
+    depends_on:
+      - mysql_server
+    environment:
+      PMA_HOST: mysql_server
