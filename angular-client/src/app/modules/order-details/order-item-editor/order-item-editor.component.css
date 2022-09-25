@@ -28,3 +28,8 @@
 .item-amount {
     margin-top: 5px;
 }
+
+
+.editor-container .mat-form-field{
+    font-size: 12px;
+}

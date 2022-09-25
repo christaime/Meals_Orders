@@ -40,11 +40,7 @@ import { FakeServerService } from 'src/app/test/fake-server.service';
     ItemsRoutingModule
   ],
   providers:[
-    {provide: ItemsService, useFactory: (httpClient: HttpClient)=>{
-      let service = new FakeServerService(httpClient);
-      service.type = "items";
-      return service;
-    },deps:[HttpClient] }
+    
   ]
 })
 export class ItemsModule { }

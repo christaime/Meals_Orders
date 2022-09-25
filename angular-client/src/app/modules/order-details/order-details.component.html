@@ -1,7 +1,7 @@
-<mat-card >
+<mat-card class="main-card">
     <mat-card-header >
       <mat-card-title >
-          <div class="float-start d-none d-sm-block">{{ "Manage an order" | translate | uppercase}}</div>
+          <div class="float-start d-none d-sm-block">{{ "Manage order" | translate | uppercase}}</div>
           <div class="float-end float-sm-none" style="right: 2em; position: fixed;">{{ "Total amount:" | translate | uppercase}}  
             <span class="badge rounded-pill bg-dark mat-elevation-z2">{{totalAmount | currency:currency:'symbol':'.2-2'}}</span> 
           </div>          
@@ -9,11 +9,12 @@
     </mat-card-header>
     <mat-divider></mat-divider>
     <mat-card-content >     
-        <app-order-item-editor (saveItem)="saveItem($event)" (orderChanged)="editOrder($event)" [order]="order" [currency]="currency" ></app-order-item-editor>
+        <app-order-item-editor (saveItem)="saveItem($event)" (orderChanged)="editOrder($event)" 
+        [order]="order" [currency]="currency" [item]="itemToEdit" ></app-order-item-editor>
         <div class="table-container">
           <table mat-table [dataSource]="orderItems" class="entity-table">
             <tr mat-header-row *matHeaderRowDef="tableColumns" ></tr>
-            <tr mat-row *matRowDef="let row; columns: tableColumns;" ></tr>
+            <tr mat-row *matRowDef="let row; columns: tableColumns;"  (dblclick)="editOrderItem(row)"></tr>
             
             <ng-container matColumnDef="code">
               <th mat-header-cell *matHeaderCellDef> {{ "Item code" | translate  | uppercase}} </th>

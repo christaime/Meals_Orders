@@ -1,0 +1,7 @@
+.entity-table{
+    width: 100%;
+}
+
+.entity-table tr{
+    cursor: default;
+}

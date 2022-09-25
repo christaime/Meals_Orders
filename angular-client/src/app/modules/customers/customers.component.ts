@@ -91,11 +91,14 @@ export class CustomersComponent implements OnInit {
     const index = datas.findIndex((data)=>{ return data.editable == true && data.id === row.id});
     if(index!=-1){  
       //save the customer on server
+      let newLine = customer.id? false: true;
       this.service.save(customer).subscribe({
         next: (value: Customer)=>{
           value.editable = false;
           console.log("save value in component ", value);
           datas.splice(index,1,value);
+          this.totalElements = newLine? this.totalElements++ : this.totalElements;
+          console.log({newLine,totalElements: this.totalElements});
           this.datas = datas;
           this.inEditionMode = false;
           this.isNewRowEditionMode = false;
@@ -174,6 +177,7 @@ export class CustomersComponent implements OnInit {
     if(index!=-1){   
       if(row.id == null){
         datas.splice(index,1);
+        this.totalElements--;
         this.datas = datas;
       }else {
         this.service.delete(row.id).subscribe( {

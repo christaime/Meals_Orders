@@ -13,7 +13,7 @@ export class OrdersService extends HttpServiceService<Order>{
   }
 
   override getBaseUrl(): string {
-    return this.getContextPath()+"/order";
+    return this.getContextPath()+"/orders";
   }
 
 }

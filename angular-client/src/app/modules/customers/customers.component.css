@@ -10,7 +10,7 @@ table {
 
 table .mat-form-field{
     width: 98%;
-    font-size: 13px;
+    font-size: 12px;
 }
 
 .command-column{
@@ -21,9 +21,7 @@ table .mat-form-field{
 .mat-row:nth-child(even){
     background-color: #f8f9fa;
 }
-tr.mat-row{
-    height: 2em!important;
-}
+
 table td {
     font-size: 13px;
 }

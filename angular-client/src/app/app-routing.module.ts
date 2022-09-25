@@ -12,12 +12,13 @@ export const RoutesMapping = {
 };
 
 const routes: Routes = [
-  {path:"", redirectTo: RoutesMapping.home, pathMatch: "full"},
-  {path: RoutesMapping.home, component: HomeComponent},
+  { path:"", redirectTo: RoutesMapping.home, pathMatch: "full"},
+  { path: RoutesMapping.home, component: HomeComponent},
   { path: RoutesMapping.customers, loadChildren: () => import('./modules/customers/customers.module').then(m => m.CustomersModule) },
   { path: RoutesMapping.items, loadChildren: () => import('./modules/items/items.module').then(m => m.ItemsModule) },
   { path: RoutesMapping.orders, loadChildren: () => import('./modules/orders/orders.module').then(m => m.OrdersModule) },
   { path: RoutesMapping.ordersCreate, loadChildren: () => import('./modules/order-details/order-details.module').then(m => m.OrderDetailsModule) },  
+  { path: RoutesMapping.ordersList, loadChildren: () => import('./modules/orders/orders.module').then(m => m.OrdersModule) },  
 ];
 
 @NgModule({

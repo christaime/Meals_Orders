@@ -65,11 +65,15 @@ export class TableBase<T extends Persistable> implements OnInit{
     const index = datas.findIndex((data)=>{ return data.editable == true && data.id === row.id});
     if(index!=-1){  
       //save the entity on server
+      let newLine = entity.id? false: true;
       this.service.save(entity).subscribe({
         next: (value: T)=>{
           value.editable = false;
           console.log("save value in component ", value);
           datas.splice(index,1,value);
+          let total = newLine === true? this.totalElements + 1 : this.totalElements;
+          this.totalElements = total;
+          console.log({newLine,total,totalElements: this.totalElements});
           this.datas = datas;
           this.inEditionMode = false;
           this.notification.info(this.getSaveSuccedMessage());
@@ -169,6 +173,7 @@ export class TableBase<T extends Persistable> implements OnInit{
     if(index!=-1){   
       if(row.id == null){
         datas.splice(index,1);
+        this.totalElements--;
         this.datas = datas;
       }else {
         this.service.delete(row.id).subscribe( {

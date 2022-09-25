@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { NotificationService } from 'src/app/common/notification.service';
 import { Order, OrderItem } from 'src/app/model/order';
 import { OrdersService } from '../orders/orders.service';
@@ -27,11 +28,29 @@ export class OrderDetailsComponent implements OnInit {
   currency: string = "$";
   tmpId = 1;
 
-  constructor(private service:OrderItemService, private notification: NotificationService, private orderService: OrdersService) { 
+  constructor(private service:OrderItemService, private notification: NotificationService,
+    private route: ActivatedRoute,
+     private orderService: OrdersService) { 
+      this.order = new Order();
 
   }
 
   ngOnInit(): void {
+    this.route.paramMap.subscribe( (data)=>{
+       console.log('order-details ngOnInit ', data);
+       let id = (data as any).params? (data as any).params.id : null;
+       if(id !== null && id !== undefined){
+        this.orderService.get(id).subscribe( {
+          next: (order)=>{
+            this.order = order;
+            this.orderItems = order && order.orderDetails? order.orderDetails : [];
+          },
+          error: (err)=>{
+
+          }
+        });
+       }
+    })
   }
 
   saveItem(event: OrderItem){
@@ -104,5 +123,9 @@ export class OrderDetailsComponent implements OnInit {
         console.error(er);
       }
     }); 
+  }
+
+  editOrderItem(row:OrderItem){
+    this.itemToEdit = row;
   }
 }

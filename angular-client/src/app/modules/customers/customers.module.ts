@@ -42,11 +42,6 @@ import { MAT_SNACK_BAR_DEFAULT_OPTIONS } from '@angular/material/snack-bar';
     CustomersRoutingModule
   ],
   providers: [
-    {provide: CustomersService, useFactory: (httpClient: HttpClient)=>{
-      let service = new FakeServerService(httpClient);
-      service.type = "customers";
-      return service;
-    },deps:[HttpClient] }
   ]
 })
 export class CustomersModule { }
