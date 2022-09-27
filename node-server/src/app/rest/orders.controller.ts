@@ -44,20 +44,19 @@ export class OrdersController extends BaseController<Order>{
         const id = req.params.id;
         let transac: Transaction = await AppDataSource.getAppDatabaseSource().transaction();
         try{
-            OrderItem.findByPk(id,{transaction: transac}).then( (item:OrderItem)=>{
-                item.destroy({transaction: transac,force:true}).then( async (result: any) =>{
-                    let subquery = "(SELECT SUM(amount) FROM "+OrderItem.getTableName()+" WHERE orderId ="+item.orderId+")";
-                    const updateResult = await AppDataSource.getAppDatabaseSource().query("UPDATE "+Order.getTableName()
-                    +" SET amount = "+subquery+" WHERE id ="+item.orderId,{transaction: transac});        
-                    console.log({updateResult});
-                    transac.commit();
-                    res.send(result);
-                });
-            }).catch((err: { message: any; }) =>{
-                res.status(500).send({error:err.message});
-            });
+            let item:OrderItem = await OrderItem.findByPk(id,{transaction: transac});
+            let orderId = item.orderId;
+            await item.destroy({transaction: transac});
+            let subquery = "(SELECT SUM(amount) FROM "+OrderItem.getTableName()+" WHERE orderId ="+orderId+")";
+            const updateResult = await AppDataSource.getAppDatabaseSource().query("UPDATE "+Order.getTableName()
+            +" SET amount = "+subquery+" WHERE id ="+orderId,{transaction: transac});        
+            console.log({updateResult});
+            transac.commit();
+            res.send(true);
         } catch (e){
             console.error(e);
+            transac.rollback();
+            res.status(500).send({error: (e as any).message});
         }
     }
 
@@ -81,10 +80,7 @@ export class OrdersController extends BaseController<Order>{
                     {orderNumber:{[Op.like]:text}},
                     {note:{[Op.like]:text}},
                     {address:{[Op.like]:text}},
-                    {customer:{
-                        name:{[Op.like]:text}
-                       }
-                    },
+                    {'$customer.name$':{[Op.like]:text}}
                 ]
             };
         }

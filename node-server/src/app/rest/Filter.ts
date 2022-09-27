@@ -4,6 +4,9 @@ export class Filter{
     page?:number;
     pageSize?: number;
     text?: string;
+    code?:string;
+    name?:string;
+    description?:string;
     constructor(page?: number, pageSize?:number){
         this.page = page;
         this.pageSize = pageSize;

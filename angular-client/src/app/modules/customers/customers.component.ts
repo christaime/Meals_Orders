@@ -26,7 +26,7 @@ export class CustomersComponent implements OnInit {
   isNewRowEditionMode: boolean = false;
 
   codeRegEx = /^([A-Z]|[0-9])+$/;
-  nameRegEx = /^([A-Z]|[0-9]|\s|[ŒÉÊÀÇ_È-])+$/;
+  nameRegEx = /^([A-Z]|[0-9]|\s|\.|[ŒÉÊÀÇ_È-])+$/;
   //phoneRegEx = /^([0-9]|(([0-9]{3}((-)*[0-9]{3}))+))+$/;
   //phoneRegEx=/(^([0-9]{9,12})$)/;
   phoneRegEx =/^(([0-9]{9,12})|((([\+]?)([0-9]{1,3}))(([\s-]([0-9]{3})){3,4})))$/

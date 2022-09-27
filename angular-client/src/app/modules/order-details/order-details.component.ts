@@ -56,11 +56,13 @@ export class OrderDetailsComponent implements OnInit {
   }
 
   saveItem(event: OrderItem){
-    if(event.id == null && event.tmpId == null){
-      event.tmpId = "" + (++this.tmpId);
-    }
     let datas = [...this.orderItems];
-    datas.push(event);
+    let index = datas.findIndex( (it)=>{ return it.id === event.id});
+    if(index !== -1){
+      datas.splice(index,1,event);
+    } else {
+      datas.push(event);
+    }  
     this.orderItems = datas;
     this.totalAmount = "" + (parseFloat(this.totalAmount) + parseFloat(event.amount));
   }
