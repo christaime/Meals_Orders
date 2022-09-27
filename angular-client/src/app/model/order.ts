@@ -1,3 +1,4 @@
+import { Customer } from "./customer";
 import { Persistable } from "./persistable";
 
 export class Order extends Persistable{
@@ -12,6 +13,7 @@ export class Order extends Persistable{
     orderNumber!: string;
     orderStatus!: string;
     paymentStatus!: string;
+    customer!: Customer;
 }
 
 export class OrderItem extends Persistable{

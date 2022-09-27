@@ -42,8 +42,10 @@ export class OrderDetailsComponent implements OnInit {
        if(id !== null && id !== undefined){
         this.orderService.get(id).subscribe( {
           next: (order)=>{
+            order.customerId = order.customer?.id;
             this.order = order;
             this.orderItems = order && order.orderDetails? order.orderDetails : [];
+            this.totalAmount = ""+parseFloat(this.order.amount);
           },
           error: (err)=>{
 
@@ -97,20 +99,6 @@ export class OrderDetailsComponent implements OnInit {
   editOrder(event:Order){
     this.order = {...event};
     console.log({event:event,order:this.order});
-    this.saveOrderWithoutItems();
-  }
-
-  saveOrderWithoutItems(){
-    let orderToSave = {...this.order};
-    this.orderService.save(orderToSave).subscribe( {
-      next: (res)=>{
-        this.order = res;
-        this.notification.info("Order saved");
-      },
-      error: (er)=>{
-        console.error(er);
-      }
-    }); 
   }
 
   saveOrder(){
@@ -124,6 +112,7 @@ export class OrderDetailsComponent implements OnInit {
       }
     }); 
   }
+  
 
   editOrderItem(row:OrderItem){
     this.itemToEdit = row;

@@ -2,22 +2,22 @@
     <div class="row">
         <mat-form-field class="col-xs-12 col-sm-4 col-md-2" appearance="outline">
             <mat-label>{{ "Number" | translate | uppercase}}</mat-label>
-            <input formControlName="orderNumber" matInput  placeholder="{{ 'Unique order number' | translate}}">
+            <input formControlName="orderNumber" matInput (change)="orderChangedManage()" placeholder="{{ 'Unique order number' | translate}}">
         </mat-form-field>
         <mat-form-field class="col-xs-12 col-sm-4 col-md-2" appearance="outline">
             <mat-label>{{ "Order date" | translate | uppercase}}</mat-label>
-            <input formControlName="oderDate" matInput [matDatepicker]="picker">
+            <input formControlName="oderDate" (change)="orderChangedManage()" matInput [matDatepicker]="picker">
             <mat-hint>{{ "foarmat MM/DD/YYYY"| translate}}</mat-hint>
             <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
         <mat-form-field class="col-xs-12 col-sm-4 col-md-4" appearance="outline">
             <mat-label>{{ "Address" | translate | uppercase}}</mat-label>
-            <input formControlName="address" matInput placeholder="{{ 'delivery address' | translate}}">
+            <input formControlName="address" (change)="orderChangedManage()" matInput placeholder="{{ 'delivery address' | translate}}">
         </mat-form-field>
         <mat-form-field class="col-xs-12 col-sm-6 col-md-2" appearance="outline">
             <mat-label>{{ "Order status"| translate |uppercase}}</mat-label>
-            <mat-select formControlName="orderStatus">
+            <mat-select formControlName="orderStatus" (valueChange)="orderChangedManage()" >
               <mat-option *ngFor="let orderStatus of orderStatusList" [value]="orderStatus.value">
                 {{orderStatus.name}}
               </mat-option>
@@ -25,7 +25,7 @@
         </mat-form-field>
         <mat-form-field class="col-xs-12 col-sm-6 col-md-2" appearance="outline">
             <mat-label>{{ "Order payment status"| translate |uppercase}}</mat-label>
-            <mat-select formControlName="paymentStatus">
+            <mat-select formControlName="paymentStatus" (valueChange)="orderChangedManage()" >
               <mat-option *ngFor="let orderPaymentStatus of orderPaymantStatusList" [value]="orderPaymentStatus.value">
                 {{orderPaymentStatus.name}}
               </mat-option>
@@ -62,7 +62,7 @@
         </mat-form-field>
         <mat-form-field class="col-xs-12 col-sm-12 col-md-5" appearance="outline">
             <mat-label>{{ "Note" | translate | uppercase}}</mat-label>
-            <input formControlName="note" matInput placeholder="{{ 'note' | translate}}">
+            <input formControlName="note" (change)="orderChangedManage()" matInput placeholder="{{ 'note' | translate}}">
         </mat-form-field>
     </div>
     <mat-divider></mat-divider>

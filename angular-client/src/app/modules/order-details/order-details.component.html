@@ -10,7 +10,7 @@
     <mat-divider></mat-divider>
     <mat-card-content >     
         <app-order-item-editor (saveItem)="saveItem($event)" (orderChanged)="editOrder($event)" 
-        [order]="order" [currency]="currency" [item]="itemToEdit" ></app-order-item-editor>
+         [totalOrderAmount]="totalAmount" [order]="order" [currency]="currency" [item]="itemToEdit" ></app-order-item-editor>
         <div class="table-container">
           <table mat-table [dataSource]="orderItems" class="entity-table">
             <tr mat-header-row *matHeaderRowDef="tableColumns" ></tr>

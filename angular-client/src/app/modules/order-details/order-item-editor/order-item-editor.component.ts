@@ -8,6 +8,7 @@ import { Item } from 'src/app/model/items';
 import { Order, OrderItem, OrderStatus, PaymantStatus } from 'src/app/model/order';
 import { CustomersService } from '../../customers/customers.service';
 import { ItemsService } from '../../items/items.service';
+import { OrdersService } from '../../orders/orders.service';
 import { OrderItemService } from '../order.item.service';
 
 @Component({
@@ -18,6 +19,8 @@ import { OrderItemService } from '../order.item.service';
 export class OrderItemEditorComponent implements OnInit , OnChanges{
 
   @Input() order!: Order;
+
+  @Input() totalOrderAmount!: string;
 
   @Input() item!: OrderItem;
 
@@ -42,7 +45,7 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
   currency: string = "$";
 
   constructor(private customerService: CustomersService, private orderItemService: OrderItemService,
-    private itemService: ItemsService,
+    private itemService: ItemsService, private orderService: OrdersService,
      private notification: NotificationService) { 
     this.order = new Order();
     this.item = new OrderItem();
@@ -71,17 +74,18 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
     if(changes["item"]){
       this.itemFormEditor.patchValue(this.item);
     }
+    if(changes["totalOrderAmount"]){
+       this.order.amount = this.totalOrderAmount;
+       console.log("totalOrderAmount ", this.totalOrderAmount);
+    }
     if(changes["order"]){
       console.log("order changed ", this.order);
       this.orderEditor.patchValue(this.order,{onlySelf:true, emitEvent:false});
+      this.customerSelected = this.order?.customer;
     }
   }
 
-  ngOnInit(): void {  
-
-    /*this.orderEditor.valueChanges.subscribe( (orderValue)=>{
-      
-    });*/
+  ngOnInit(): void { 
 
     this.itemFormEditor.valueChanges.subscribe( (val)=>{
       if(this.itemSelected != null){
@@ -152,12 +156,23 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
 
   }
 
-  orderChangedManage(){
+  orderChangedManage(notify?:boolean){
     let orderValue = this.orderEditor.value;
     console.log("orderEditor.valueChanges",orderValue);
       if(this.orderEditor.valid===true){
-        let order = {...orderValue};
+        let order = {...this.order,...orderValue};
         order.customerId = this.customerSelected?.id;
+        this.orderService.save(order).subscribe( {
+          next: (res)=>{
+            this.order = res;
+            /*if(notify===true){
+              this.notification.info("Order saved");
+            }*/
+          },
+          error: (er)=>{
+            console.error(er);
+          }
+        }); 
         this.orderChanged.emit(order);
       }
   }
@@ -238,15 +253,13 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
         this.orderEditor.markAsDirty();
         this.orderEditor.updateValueAndValidity();
       }else {
-        if(!this.order.id){
-          this.orderChangedManage();
-        }
         item.orderId = this.order?.id;
         item.itemId = this.itemSelected?.id;
         this.orderItemService.save(item).subscribe({
           next: (itemSaved:OrderItem)=>{
             this.clearItem();
-            this.saveItem.emit(itemSaved);
+            item.id = itemSaved.id;
+            this.saveItem.emit(item);
             this.notification.info("Order item saved");
           },
           error: (err)=>{
@@ -265,5 +278,4 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
   validEntity(c: FormControl){
     return c.value !=null && typeof c.value !== 'string'? null: {validEntity:{valid:false}};
   }
-
 }
