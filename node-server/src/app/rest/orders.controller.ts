@@ -1,5 +1,7 @@
 
 const { Op , sequelize} = require('sequelize');
+import { Transaction } from "sequelize";
+import { AppDataSource } from "../db-access/datasource";
 import { Customer } from "../model/Customer";
 import { Item } from "../model/Item";
 import { Order, OrderItem } from "../model/Order";
@@ -12,29 +14,51 @@ export class OrdersController extends BaseController<Order>{
         super(Order);
     }
 
-    public saveOrderItem(req:any, res:any){
-        console.log("saveOrderItem",req.body);
-        const item = OrderItem.build(req.body);
-        item.save().then( async (dataSaved: any) =>{
-            //Update Order and is amount
-            const orderAmount = await sequelize.query("SELECT SUM(amount) FROM "+OrderItem.getTableName()+" WHERE orderId ="+item.orderId);
-            console.log({orderAmount});
-            const updateResult = await sequelize.query("UPDATE "+Order.getTableName()+" SET amount = "+orderAmount+" WHERE id ="+item.orderId);        
+    public async saveOrderItem(req:any, res:any){
+        console.log("saveOrderItem",req.body);  
+        let entity = req.body;  
+        let transac: Transaction = await AppDataSource.getAppDatabaseSource().transaction();    
+        try{   
+            let orderId = entity.orderId;         
+            if(entity.id !== undefined && entity.id !== null){
+                const updated = await OrderItem.update(entity,{transaction: transac,where:{id:entity.id}});
+            }else{
+                entity = await OrderItem.build(entity).save({transaction: transac});
+            }
+            console.log(" orderItem ", entity);
+            let subquery = "(SELECT SUM(amount) FROM "+OrderItem.getTableName()+" WHERE orderId ="+orderId+")";
+            const updateResult = await AppDataSource.getAppDatabaseSource().query("UPDATE "+Order.getTableName()
+            +" SET amount = "+subquery+" WHERE id ="+orderId,{transaction: transac});        
             console.log({updateResult});
-            res.send(dataSaved);
-        }).catch((err: { message: any; }) =>{
-            res.status(500).send({error:err.message});
-        });
+            transac.commit();
+            res.send(entity);
+        } catch (e){
+            console.error(e);
+            transac.rollback();
+            res.status(500).send({error: (e as any).message});
+        }
     }
 
-    public deleteOrderItemById(req:any, res:any){
+    public async deleteOrderItemById(req:any, res:any){
         console.log("deleteOrderItemById",req.params);
         const id = req.params.id;
-        OrderItem.destroy({where:{id:id},force:true}).then( (result: any) =>{
-            res.send(result);
-        }).catch((err: { message: any; }) =>{
-            res.status(500).send({error:err.message});
-        });
+        let transac: Transaction = await AppDataSource.getAppDatabaseSource().transaction();
+        try{
+            OrderItem.findByPk(id,{transaction: transac}).then( (item:OrderItem)=>{
+                item.destroy({transaction: transac,force:true}).then( async (result: any) =>{
+                    let subquery = "(SELECT SUM(amount) FROM "+OrderItem.getTableName()+" WHERE orderId ="+item.orderId+")";
+                    const updateResult = await AppDataSource.getAppDatabaseSource().query("UPDATE "+Order.getTableName()
+                    +" SET amount = "+subquery+" WHERE id ="+item.orderId,{transaction: transac});        
+                    console.log({updateResult});
+                    transac.commit();
+                    res.send(result);
+                });
+            }).catch((err: { message: any; }) =>{
+                res.status(500).send({error:err.message});
+            });
+        } catch (e){
+            console.error(e);
+        }
     }
 
     public findOrderItemById(req:any, res:any){
@@ -74,7 +98,10 @@ export class OrdersController extends BaseController<Order>{
     }
 
     public override findByInclude(){
-        return { include:Customer};
+        return { include: [
+            { model: Customer},
+            { model:OrderItem, as: 'orderDetails', include: Item}
+        ]};
     }
 
 }

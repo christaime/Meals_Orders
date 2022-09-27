@@ -14,7 +14,12 @@ export class Router {
         this.app.get(`${this.contextPath}/`, (req, res) => {
             res.send('Hello World!')
         });
-        this.initOtherRouting();
+        try{
+            this.initOtherRouting();
+        }catch(ex){
+            console.error(" General routing controller ",ex);
+        }
+        
     }
 
     public initOtherRouting(){

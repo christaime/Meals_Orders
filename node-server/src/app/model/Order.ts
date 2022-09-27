@@ -110,7 +110,7 @@ OrderItem.init({
     itemName: {
       type: DataTypes.VIRTUAL,
       get(this:Order): string {
-          return this.item?.name;
+          return this.item?.description;
       }
     }
   }, {
