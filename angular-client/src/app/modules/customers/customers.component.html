@@ -14,12 +14,12 @@
     <div>
       <div class="mat-elevation-z3 table-container">
         <form [formGroup]="customerEditorFormGroup">
-          <table mat-table [dataSource]="datas" class="entity-table">
+          <table mat-table [dataSource]="datas" class="entity-table" matSort (matSortChange)="sortData($event)">
             <tr mat-header-row *matHeaderRowDef="tableColumns" ></tr>
             <tr mat-row *matRowDef="let row; columns: tableColumns;" ></tr>
             
             <ng-container matColumnDef="Code">
-              <th mat-header-cell *matHeaderCellDef> {{ "Code" | translate  | uppercase}} </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="code" > {{ "Code" | translate  | uppercase}} </th>
               <td mat-cell *matCellDef="let row;">
                   <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderCode">
                       <mat-label>{{"Code" | translate}}</mat-label>
@@ -34,7 +34,7 @@
               </td>
             </ng-container>
             <ng-container matColumnDef="Name">
-              <th mat-header-cell *matHeaderCellDef> {{ "Name" | translate | uppercase}} </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="name" > {{ "Name" | translate | uppercase}} </th>
               <td mat-cell *matCellDef="let row">
                   <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderName">
                       <mat-label>{{"Name" | translate}}</mat-label>
@@ -49,7 +49,7 @@
               </td>
             </ng-container>
             <ng-container matColumnDef="Address">
-              <th mat-header-cell *matHeaderCellDef> {{ "Address" | translate | uppercase}} </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="address" > {{ "Address" | translate | uppercase}} </th>
               <td mat-cell *matCellDef="let row">
                   <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderAddress">
                       <mat-label>{{"Address" | translate}}</mat-label>
@@ -64,7 +64,7 @@
               </td>
             </ng-container>
             <ng-container matColumnDef="Phones">
-              <th mat-header-cell *matHeaderCellDef> {{ "Phones" | translate | uppercase }} </th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header="phone" > {{ "Phones" | translate | uppercase }} </th>
               <td mat-cell *matCellDef="let row">
                   <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderPhone">
                       <mat-label>{{"Phone number" | translate}}</mat-label>
@@ -78,7 +78,7 @@
               </td>
             </ng-container>
             <ng-container matColumnDef="Email">
-              <th mat-header-cell *matHeaderCellDef> {{ "Email" | translate | uppercase }} </th>
+              <th mat-header-cell *matHeaderCellDef  mat-sort-header="email" > {{ "Email" | translate | uppercase }} </th>
               <td mat-cell *matCellDef="let row">
                   <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderEmail">
                       <mat-label>{{"Email" | translate}}</mat-label>
@@ -92,7 +92,7 @@
               </td>
             </ng-container>
             <ng-container matColumnDef="gender">
-              <th mat-header-cell *matHeaderCellDef> {{ "Gender" | translate | uppercase }}  </th>
+              <th mat-header-cell *matHeaderCellDef  mat-sort-header="gender" > {{ "Gender" | translate | uppercase }}  </th>
               <td mat-cell *matCellDef="let row">
                   <mat-form-field appearance="outline" *ngIf="row.editable==true; else renderGender">
                       <mat-label>{{"Gender" | translate}}</mat-label>
@@ -120,9 +120,9 @@
                         <i class="bi bi-check-square-fill"></i>
                         {{ "Save" | translate }}
                       </button>
-                      <button class="btn btn-danger mat-elevation-z2" type="button" mat-icon-button (click)="deleteCustomer(row)">
+                      <button class="btn btn-secondary mat-elevation-z2" type="button" mat-icon-button (click)="cancelEdition(row)">
                         <i class="bi bi-file-excel-fill"></i>
-                        {{ "Delete" | translate }}
+                        {{ "Cancel" | translate }}
                       </button>
                     </ng-template>
                     <ng-template #renderCreateBtn>

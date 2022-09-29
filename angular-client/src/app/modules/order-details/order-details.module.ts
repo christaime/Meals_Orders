@@ -15,9 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
-import { ItemsService } from '../items/items.service';
-import { FakeServerService } from 'src/app/test/fake-server.service';
-import { CustomersService } from '../customers/customers.service';
+import {MatSortModule} from '@angular/material/sort';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -29,6 +27,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
   imports: [
     CommonModule,
     MatCardModule,
+    MatSortModule,
     MatDividerModule,
     TranslateModule,
     MatFormFieldModule,

@@ -36,12 +36,15 @@ export class TableBase<T extends Persistable> implements OnInit{
 
   search(text?:string){
     this.filter.text = text;
+    this.notification.longProcessOngoing(true);
     this.service.search(this.filter).subscribe( {
       next: (page:ResponsePage)=>{
         this.datas = page.content? page.content : [];
         this.totalElements = page.totalElements;
+        this.notification.longProcessOngoing(false);
       },
       error: (er)=>{
+        this.notification.longProcessOngoing(false);
         this.notification.error(this.getFailToLoadEntityMessage());
       }
   });
@@ -66,8 +69,10 @@ export class TableBase<T extends Persistable> implements OnInit{
     if(index!=-1){  
       //save the entity on server
       let newLine = entity.id? false: true;
+      this.notification.longProcessOngoing(true);
       this.service.save(entity).subscribe({
         next: (value: T)=>{
+          this.notification.longProcessOngoing(false);
           value.editable = false;
           console.log("save value in component ", value);
           datas.splice(index,1,value);
@@ -79,6 +84,7 @@ export class TableBase<T extends Persistable> implements OnInit{
           this.notification.info(this.getSaveSuccedMessage());
         },
         error: (error)=>{
+          this.notification.longProcessOngoing(false);
           console.error(error);
           this.notification.error(this.saveFailMessage());
         }
@@ -173,16 +179,20 @@ export class TableBase<T extends Persistable> implements OnInit{
     if(index!=-1){   
       if(row.id == null){
         datas.splice(index,1);
-        this.totalElements--;
+        let total = this.totalElements-1;
+        this.totalElements = total;
         this.datas = datas;
       }else {
+        this.notification.longProcessOngoing(true);
         this.service.delete(row.id).subscribe( {
           next: (res)=>{
+            this.notification.longProcessOngoing(false);
             datas.splice(index,1);
             this.datas = datas;
             this.notification.info(this.getDeleteSucessfullyMessage());
           },
           error: (err)=>{
+            this.notification.longProcessOngoing(false);
             console.error(err);
             this.notification.error(this.getDeleteFailMessage());
           }
@@ -200,10 +210,32 @@ export class TableBase<T extends Persistable> implements OnInit{
     this.entityEditorFormGroup.patchValue(entity as any);    
   }
 
+
+  cancelEdition(row:any){
+    let datas = [...this.datas];
+    const index = datas.findIndex((data)=>{ return data.editable == true});
+    if(index !== -1){
+      datas[index].editable = false;
+    }
+    this.datas = datas;
+    this.inEditionMode = false;
+  }
+
   pageChanged(event:any) {
     console.log({event});
     this.filter.pageSize = event.pageSize;
     this.filter.page = event.pageIndex;
     this.search(this.searchControl.value);
+  }
+
+
+  sortData(event:any){
+    console.log("sortDate ",{event});
+    if(event && event.direction !== ""){
+      this.filter.sort = event;
+      this.search(this.searchControl.value);
+    }else {
+      this.filter.sort = undefined;
+    }
   }
 }

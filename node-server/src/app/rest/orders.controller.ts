@@ -100,4 +100,11 @@ export class OrdersController extends BaseController<Order>{
         ]};
     }
 
+    public override getOrder(filter: Filter): any{
+        if(filter.sort && filter.sort.active === "customer.name"){
+            return [[{model: Customer, as: 'customer'}, 'name', filter.sort.direction !== "" ? filter.sort.direction.toUpperCase() : "DESC"]];
+        } else {
+            return super.getOrder(filter);
+        }
+    }
 }

@@ -15,8 +15,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { TranslateModule } from '@ngx-translate/core';
-import { ItemsService } from './items.service';
-import { FakeServerService } from 'src/app/test/fake-server.service';
+import {MatSortModule} from '@angular/material/sort';
 
 
 @NgModule({
@@ -26,6 +25,7 @@ import { FakeServerService } from 'src/app/test/fake-server.service';
   imports: [
     CommonModule,
     HttpClientModule,
+    MatSortModule,
     MatToolbarModule,
     MatIconModule,
     MatTableModule,

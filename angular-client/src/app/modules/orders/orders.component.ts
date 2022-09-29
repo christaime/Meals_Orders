@@ -37,12 +37,15 @@ export class OrdersComponent implements OnInit {
 
   search(text?:string){
     this.filter.text = text;
+    this.notification.longProcessOngoing(true);
     this.service.search(this.filter).subscribe( {
       next: (page:ResponsePage)=>{
         this.datas = page.content? page.content : [];
         this.totalElements = page.totalElements;
+        this.notification.longProcessOngoing(false);
       },
       error: (er)=>{
+        this.notification.longProcessOngoing(false);
         this.notification.error("Fail to get orders");
       }
   });
@@ -61,5 +64,15 @@ export class OrdersComponent implements OnInit {
 
   deleteEntity(row:Order) {
 
+  }
+
+  sortData(event:any){
+    console.log("sortDate ",{event});
+    if(event && event.direction !== ""){
+      this.filter.sort = event;
+      this.search(this.searchControl.value);
+    }else {
+      this.filter.sort = undefined;
+    }
   }
 }

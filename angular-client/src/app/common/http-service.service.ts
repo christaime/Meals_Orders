@@ -61,6 +61,7 @@ export class HttpServiceService<T extends Persistable>{
 
 export class Filter {
   public static MAX_PAGE_COUNT=25;
+  public sort?: {active: string, direction: string};
   constructor(){
     this.page = 0;
     this.pageSize = Filter.MAX_PAGE_COUNT;

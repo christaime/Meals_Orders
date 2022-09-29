@@ -162,14 +162,14 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
       if(this.orderEditor.valid===true){
         let order = {...this.order,...orderValue};
         order.customerId = this.customerSelected?.id;
+        this.notification.longProcessOngoing(true);
         this.orderService.save(order).subscribe( {
           next: (res)=>{
+            this.notification.longProcessOngoing(false);
             this.order = res;
-            /*if(notify===true){
-              this.notification.info("Order saved");
-            }*/
           },
           error: (er)=>{
+            this.notification.longProcessOngoing(false);
             console.error(er);
           }
         }); 
@@ -255,14 +255,17 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
       }else {
         item.orderId = this.order?.id;
         item.itemId = this.itemSelected?.id;
+        this.notification.longProcessOngoing(true);
         this.orderItemService.save(item).subscribe({
           next: (itemSaved:OrderItem)=>{
+            this.notification.longProcessOngoing(false);
             this.clearItem();
             item.id = itemSaved.id;
             this.saveItem.emit(item);
             this.notification.info("Order item saved");
           },
           error: (err)=>{
+            this.notification.longProcessOngoing(false);
             this.notification.error("Item save failed");
           }
         })

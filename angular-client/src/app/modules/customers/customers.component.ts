@@ -61,12 +61,15 @@ export class CustomersComponent implements OnInit {
 
   search(text?:string){
     this.filter.text = text;
+    this.notification.longProcessOngoing(true);
     this.service.search(this.filter).subscribe( {
       next: (page:ResponsePage)=>{
+        this.notification.longProcessOngoing(false);
         this.datas = page.content? page.content : [];
         this.totalElements = page.totalElements;
       },
       error: (er)=>{
+        this.notification.longProcessOngoing(false);
         this.notification.error("Fail to load customers");
       }
   });
@@ -92,12 +95,15 @@ export class CustomersComponent implements OnInit {
     if(index!=-1){  
       //save the customer on server
       let newLine = customer.id? false: true;
+      this.notification.longProcessOngoing(true);
       this.service.save(customer).subscribe({
         next: (value: Customer)=>{
+          this.notification.longProcessOngoing(false);
           value.editable = false;
           console.log("save value in component ", value);
           datas.splice(index,1,value);
-          this.totalElements = newLine? this.totalElements++ : this.totalElements;
+          let total = newLine === true? this.totalElements + 1 : this.totalElements;
+          this.totalElements = total;
           console.log({newLine,totalElements: this.totalElements});
           this.datas = datas;
           this.inEditionMode = false;
@@ -105,6 +111,7 @@ export class CustomersComponent implements OnInit {
           this.notification.info("Customer sucessfully saved");
         },
         error: (error)=>{
+          this.notification.longProcessOngoing(false);
           console.error(error);
           this.notification.error("Customer save failed");
         }
@@ -177,16 +184,20 @@ export class CustomersComponent implements OnInit {
     if(index!=-1){   
       if(row.id == null){
         datas.splice(index,1);
-        this.totalElements--;
+        let total = this.totalElements-1;
+        this.totalElements = total;
         this.datas = datas;
       }else {
+        this.notification.longProcessOngoing(true);
         this.service.delete(row.id).subscribe( {
           next: (res)=>{
+            this.notification.longProcessOngoing(false);
             datas.splice(index,1);
             this.datas = datas;
             this.notification.info("Customer sucessfully deleted");
           },
           error: (err)=>{
+            this.notification.longProcessOngoing(false);
             console.error(err);
             this.notification.error("Customer deletion failed");
           }
@@ -204,10 +215,32 @@ export class CustomersComponent implements OnInit {
     this.customerEditorFormGroup.patchValue(customer as any);    
   }
 
+  cancelEdition(row:Customer){
+    let datas = [...this.datas];
+    const index = datas.findIndex((data)=>{ return data.editable == true});
+    if(index !== -1){
+      datas[index].editable = false;
+    }
+    this.datas = datas;
+    this.inEditionMode = false;
+    this.isNewRowEditionMode = false;
+  }
+
   pageChanged(event:any) {
     console.log({event});
     this.filter.pageSize = event.pageSize;
     this.filter.page = event.pageIndex;
     this.search(this.searchControl.value);
+  }
+
+
+  sortData(event:any){
+    console.log("sortDate ",{event});
+    if(event && event.direction !== ""){
+      this.filter.sort = event;
+      this.search(this.searchControl.value);
+    }else {
+      this.filter.sort = undefined;
+    }
   }
 }

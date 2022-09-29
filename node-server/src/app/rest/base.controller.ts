@@ -66,6 +66,11 @@ export class BaseController<T extends Model>{
         let queryParams:QueryParams = {where: whereClause};
         queryParams = {...queryParams, ...this.filterIncludes()};
         let query = this.entity.findAll(queryParams);
+        let order = this.getOrder(filter);
+        console.log({order});
+        if(order !== null){
+            (queryParams as any).order = order;
+        }
         let findCount = false;
         if(filter.page !== null && filter.page !== undefined){
             let page = filter.page;
@@ -96,4 +101,7 @@ export class BaseController<T extends Model>{
         return {};
     }
 
+    public getOrder(filter: Filter): any{
+        return  filter && filter.sort && filter.sort.direction !== "" ? [[filter.sort.active,filter.sort.direction.toUpperCase()]] : null;
+    }
 } 

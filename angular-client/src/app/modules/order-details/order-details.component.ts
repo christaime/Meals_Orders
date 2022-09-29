@@ -40,15 +40,17 @@ export class OrderDetailsComponent implements OnInit {
        console.log('order-details ngOnInit ', data);
        let id = (data as any).params? (data as any).params.id : null;
        if(id !== null && id !== undefined){
+        this.notification.longProcessOngoing(true);
         this.orderService.get(id).subscribe( {
           next: (order)=>{
+            this.notification.longProcessOngoing(false);
             order.customerId = order.customer?.id;
             this.order = order;
             this.orderItems = order && order.orderDetails? order.orderDetails : [];
             this.totalAmount = ""+parseFloat(this.order.amount);
           },
           error: (err)=>{
-
+            this.notification.longProcessOngoing(false);
           }
         });
        }
@@ -78,13 +80,16 @@ export class OrderDetailsComponent implements OnInit {
         datas.splice(index,1);
         this.orderItems = datas;
       }else {
+        this.notification.longProcessOngoing(true);
         this.service.delete(row.id).subscribe( {
           next: (res)=>{
+            this.notification.longProcessOngoing(false);
             datas.splice(index,1);
             this.orderItems = datas;
             this.notification.info("Item sucessfully deleted");
           },
           error: (err)=>{
+            this.notification.longProcessOngoing(false);
             console.error(err);
             this.notification.error("Item deletion failed");
           }

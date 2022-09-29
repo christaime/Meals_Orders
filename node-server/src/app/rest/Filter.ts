@@ -1,6 +1,7 @@
 
 export class Filter{
     public static MAX_PAGE_COUNT=25;
+    public sort?: {active: string, direction: string};
     page?:number;
     pageSize?: number;
     text?: string;
