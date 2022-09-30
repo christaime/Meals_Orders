@@ -60,7 +60,7 @@ registerLocaleData(enLocale);
     BrowserAnimationsModule
   ],
   providers: [
-    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3600,verticalPosition:"top"}},
+    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 3600,verticalPosition:"bottom"}},
     {provide: OverlayContainer, useClass: FullscreenOverlayContainer},
 
     /*{provide: CustomersService, useFactory: (httpClient: HttpClient)=>{

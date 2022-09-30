@@ -159,6 +159,8 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
   orderChangedManage(notify?:boolean){
     let orderValue = this.orderEditor.value;
     console.log("orderEditor.valueChanges",orderValue);
+    this.orderEditor.markAllAsTouched();
+    console.log("validity ", this.orderEditor.valid);
       if(this.orderEditor.valid===true){
         let order = {...this.order,...orderValue};
         order.customerId = this.customerSelected?.id;
@@ -166,10 +168,12 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
         this.orderService.save(order).subscribe( {
           next: (res)=>{
             this.notification.longProcessOngoing(false);
+            if(notify){this.notification.info("Order saved sucessfully!");}
             this.order = res;
           },
           error: (er)=>{
             this.notification.longProcessOngoing(false);
+            if(notify){this.notification.info("Failled to save Order!");}
             console.error(er);
           }
         }); 
@@ -201,18 +205,18 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
     this.customerSelected = customer;
     this.customerPropertyEdited='';
     console.log("selectCustmer",customer);
-    this.orderEditor.get("customer")?.patchValue(customer,{onlySelf: true, emitEvent: false});
-    this.orderEditor.get("customerCode")?.patchValue(customer.code,{onlySelf: true, emitEvent: false});
-    this.orderEditor.get("customerName")?.patchValue(customer.name,{onlySelf: true, emitEvent: false});
-    this.orderChangedManage();
+    this.orderEditor.get("customer")?.patchValue(customer,{onlySelf: false, emitEvent: false});
+    this.orderEditor.get("customerCode")?.patchValue(customer.code,{onlySelf: false, emitEvent: false});
+    this.orderEditor.get("customerName")?.patchValue(customer.name,{onlySelf: false, emitEvent: false});
+    this.orderChangedManage(true);
   }
 
   clearCustomer(){
     this.customerSelected = undefined;
     this.customerPropertyEdited='';
-    this.orderEditor.get("customer")?.patchValue(null,{onlySelf: true, emitEvent: false});
-    this.orderEditor.get("customerCode")?.patchValue('',{onlySelf: true, emitEvent: false});
-    this.orderEditor.get("customerName")?.patchValue('',{onlySelf: true, emitEvent: false});
+    this.orderEditor.get("customer")?.patchValue(null,{onlySelf: false, emitEvent: false});
+    this.orderEditor.get("customerCode")?.patchValue('',{onlySelf: false, emitEvent: false});
+    this.orderEditor.get("customerName")?.patchValue('',{onlySelf: false, emitEvent: false});
     this.customerList = [];
   }
 
@@ -230,6 +234,9 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
   clearItem(){
     this.itemSelected = undefined;
     this.itemFormEditor.reset({});
+    this.itemFormEditor.get('itemCode')?.setValue('');
+    this.itemFormEditor.get('itemName')?.setValue('');
+    this.itemFormEditor.updateValueAndValidity();
     this.itemPropertyEdited='';
     this.currentOrderItemAmount = "0";
     this.itemList = [];
@@ -252,24 +259,23 @@ export class OrderItemEditorComponent implements OnInit , OnChanges{
         this.orderEditor.markAllAsTouched();
         this.orderEditor.markAsDirty();
         this.orderEditor.updateValueAndValidity();
-      }else {
-        item.orderId = this.order?.id;
-        item.itemId = this.itemSelected?.id;
-        this.notification.longProcessOngoing(true);
-        this.orderItemService.save(item).subscribe({
-          next: (itemSaved:OrderItem)=>{
-            this.notification.longProcessOngoing(false);
-            this.clearItem();
-            item.id = itemSaved.id;
-            this.saveItem.emit(item);
-            this.notification.info("Order item saved");
-          },
-          error: (err)=>{
-            this.notification.longProcessOngoing(false);
-            this.notification.error("Item save failed");
-          }
-        })
-        
+      }else {       
+          item.itemId = this.itemSelected?.id;
+          item.orderId = this.order?.id;
+          this.notification.longProcessOngoing(true);
+          this.orderItemService.save(item).subscribe({
+            next: (itemSaved:OrderItem)=>{
+              this.notification.longProcessOngoing(false);
+              this.clearItem();
+              item.id = itemSaved.id;
+              this.saveItem.emit(item);
+              this.notification.info("Order item saved");
+            },
+            error: (err)=>{
+              this.notification.longProcessOngoing(false);
+              this.notification.error("Item save failed");
+            }
+          });        
       }
     }catch(e){
       console.error(e);

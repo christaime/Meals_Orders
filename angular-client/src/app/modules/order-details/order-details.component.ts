@@ -22,7 +22,7 @@ export class OrderDetailsComponent implements OnInit {
   public itemToEdit!: OrderItem;
 
   pageSizeOptions = [5, 10, 25, 100];
-  pageSize = this.pageSizeOptions[0];
+  pageSize = this.pageSizeOptions[1];
   totalElements = 0;
 
   currency: string = "$";
@@ -60,11 +60,13 @@ export class OrderDetailsComponent implements OnInit {
   saveItem(event: OrderItem){
     let datas = [...this.orderItems];
     let index = datas.findIndex( (it)=>{ return it.id === event.id});
+    let total = this.totalElements + 1;
     if(index !== -1){
       datas.splice(index,1,event);
     } else {
       datas.push(event);
     }  
+    this.totalElements = total;
     this.orderItems = datas;
     this.totalAmount = "" + (parseFloat(this.totalAmount) + parseFloat(event.amount));
   }
@@ -80,12 +82,14 @@ export class OrderDetailsComponent implements OnInit {
         datas.splice(index,1);
         this.orderItems = datas;
       }else {
+        let total = this.totalElements - 1;
         this.notification.longProcessOngoing(true);
         this.service.delete(row.id).subscribe( {
           next: (res)=>{
             this.notification.longProcessOngoing(false);
             datas.splice(index,1);
             this.orderItems = datas;
+            this.totalElements = total;
             this.notification.info("Item sucessfully deleted");
           },
           error: (err)=>{

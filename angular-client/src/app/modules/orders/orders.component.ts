@@ -18,7 +18,7 @@ export class OrdersComponent implements OnInit {
   datas: readonly Order[] = [];
 
   pageSizeOptions = [5, 10, 25, 100];
-  pageSize = this.pageSizeOptions[1];
+  pageSize = this.pageSizeOptions[0];
   totalElements = 0;
 
   filter!: Filter;

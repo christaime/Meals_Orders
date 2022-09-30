@@ -49,7 +49,7 @@ export class OrdersController extends BaseController<Order>{
             await item.destroy({transaction: transac});
             let subquery = "(SELECT SUM(amount) FROM "+OrderItem.getTableName()+" WHERE orderId ="+orderId+")";
             const updateResult = await AppDataSource.getAppDatabaseSource().query("UPDATE "+Order.getTableName()
-            +" SET amount = "+subquery+" WHERE id ="+orderId,{transaction: transac});        
+            +" SET amount = IFNULL("+subquery+",0) WHERE id ="+orderId,{transaction: transac});        
             console.log({updateResult});
             transac.commit();
             res.send(true);
