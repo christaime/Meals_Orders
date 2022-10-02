@@ -174,33 +174,32 @@ export class TableBase<T extends Persistable> implements OnInit{
   deleteEntity(row: T){
     console.log("deleteEntity",row);
     let datas = [...this.datas];
-    const index = datas.findIndex((data)=>{ return data.editable == true});
+    const index = datas.findIndex((data)=>{ return data.id === row.id });
     console.log({datas, index});
     if(index!=-1){   
-      if(row.id == null){
-        datas.splice(index,1);
-        let total = this.totalElements-1;
-        this.totalElements = total;
-        this.datas = datas;
-      }else {
-        this.notification.longProcessOngoing(true);
-        this.service.delete(row.id).subscribe( {
-          next: (res)=>{
-            this.notification.longProcessOngoing(false);
-            datas.splice(index,1);
-            this.datas = datas;
-            this.notification.info(this.getDeleteSucessfullyMessage());
-          },
-          error: (err)=>{
-            this.notification.longProcessOngoing(false);
-            console.error(err);
-            this.notification.error(this.getDeleteFailMessage());
+      this.notification.userChoice({choices: [
+        {text: "NO",value: false},{text: "YES",value: true}
+      ],
+      questionText: "Do you realy want to delete?",
+      dialogTitle: "Delete confirmation"}).subscribe( (res:boolean)=>{
+          if(res === true){
+            this.notification.longProcessOngoing(true);
+            this.service.delete(row.id+'').subscribe( {
+              next: (res)=>{
+                this.notification.longProcessOngoing(false);
+                datas.splice(index,1);
+                this.datas = datas;
+                this.notification.info(this.getDeleteSucessfullyMessage());
+              },
+              error: (err)=>{
+                this.notification.longProcessOngoing(false);
+                console.error(err);
+                this.notification.error(err);
+              }
+            });
           }
-        });
-      }
-      
+      });      
     }
-    this.inEditionMode = false;
 }
 
   initEntityEditorForm(entity:T){

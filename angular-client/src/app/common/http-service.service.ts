@@ -1,6 +1,6 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { Persistable } from '../model/persistable';
 
 @Injectable({
@@ -43,19 +43,37 @@ export class HttpServiceService<T extends Persistable>{
   }
 
   save(data:T): Observable<T>{
-    return this.httpClient.post<T>(this.getSaveUrl(),data,this.getHttpHeaders());
+    return this.httpClient.post<T>(this.getSaveUrl(),data,this.getHttpHeaders()).pipe().pipe(
+      catchError(this.handleError)
+    );
   }
 
   delete(dataOid: string): Observable<any>{
-    return this.httpClient.delete(this.getDeleteUrl()+"/"+dataOid,this.getHttpHeaders());
+    return this.httpClient.delete(this.getDeleteUrl()+"/"+dataOid,this.getHttpHeaders()).pipe(
+      catchError(this.handleError)
+    );
   }
 
   get(dataOid: string): Observable<any>{
-    return this.httpClient.get(this.getByOidUrl()+"/"+dataOid,this.getHttpHeaders());
+    return this.httpClient.get(this.getByOidUrl()+"/"+dataOid,this.getHttpHeaders()).pipe(
+      catchError(this.handleError)
+    );
   }
 
   search(filter:Filter): Observable<ResponsePage>{
-    return this.httpClient.post<ResponsePage>(this.getSearchUrl(),filter,this.getHttpHeaders());
+    return this.httpClient.post<ResponsePage>(this.getSearchUrl(),filter,this.getHttpHeaders()).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  private handleError(err: HttpErrorResponse){
+    console.log("httpErrorResponse, ", err);
+    let errorMessage = "Server error!";
+    if(err.status === 500){
+      errorMessage = err.error;
+    }
+    console.log({errorMessage});
+    return throwError( ()=> errorMessage);
   }
 }
 

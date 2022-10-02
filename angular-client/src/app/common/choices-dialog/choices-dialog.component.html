@@ -2,6 +2,6 @@
 <mat-dialog-content *ngIf="data.questionText">{{  data.questionText | translate }}</mat-dialog-content>
 <mat-dialog-actions class="d-flex flex-row-reverse">
     <button type="button" mat-button class="btn btn-primary"
-        *ngFor="let choice of data.choices" [mat-dialog-close]="choice">{{ choice.text | translate}}</button>
+        *ngFor="let choice of data.choices" [mat-dialog-close]="choice.value">{{ choice.text | translate}}</button>
 </mat-dialog-actions>
 

@@ -1,7 +1,7 @@
 
 import Model from "sequelize/types/model";
 import { Filter, PageResult, QueryParams } from "./Filter";
-const { Op } = require("sequelize");
+const { Op, db } = require("sequelize");
 
 export class BaseController<T extends Model>{
     constructor(private entity:T|any){
@@ -39,10 +39,15 @@ export class BaseController<T extends Model>{
         const id = req.params.id;
         this.entity.destroy({where:{id:id}}).then( (result: any) =>{
             console.log("detroy result",result);
-            res.send(result);
-        }).catch((err: { message: any; }) =>{
-            console.error("deleteById error",err);
-            res.status(500).send({error:err.message});
+            res.send(true);
+        }).catch((err: { message: any; name: any}) =>{
+            let entityModelName = this.entity.options.name.singular;
+            console.error("deleteById error",err.name,err);
+            if(err.name === "SequelizeForeignKeyConstraintError"){
+                res.status(500).send("You can't delete this "+ entityModelName + ". First delete all operations the "+ entityModelName  + " is linked to.");
+            } else{
+                res.status(500).send(err.message);
+            }
         });
     }
 

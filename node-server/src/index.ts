@@ -28,6 +28,9 @@ class Server{
         app.use(this.clientErrorHandler);
         app.use(this.errorHandler);
 
+        // Also serve angular client
+        app.use("/meals-orders",express.static('static'));
+
         console.log("Initialize request routing");
         new Router(app,contextPath).initRouting();
 
@@ -40,21 +43,23 @@ class Server{
     }
 
     public logErrors(err:any, req:any, res:any, next:any) {
-        console.error(err.stack)
-        next(err)
+        console.error(err.stack);
+        next(err);
     }
 
     public clientErrorHandler (err:any, req:any, res:any, next:any) {
         if (req.xhr) {
-          res.status(500).send({ error: 'Something failed!' })
+          res.status(500).send({ error: 'Something failed!' });
         } else {
-          next(err)
+          next(err);
         }
     }
 
     public errorHandler (err:any, req:any, res:any, next:any) {
-        res.status(500)
-        res.render('error', { error: err })
+        res.status(500);
+        console.log("errorHandler, ", err);
+        console.log(typeof err);
+        res.render('error', { error: err });
     }
 }
 

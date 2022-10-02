@@ -60,7 +60,7 @@ export class NotificationService {
     
   }
 
-  public userChoice(data:IChoicesDialogData, dialogSize?:{width?: any, heigth?: any }): Observable<IChoice>{
+  public userChoice(data:IChoicesDialogData, dialogSize?:{width?: any, heigth?: any }): Observable<any>{
     let composedData = {...dialogSize,data:data};
     let dialogRef = this.dialog.open(ChoicesDialogComponent,composedData);
     return dialogRef.afterClosed();

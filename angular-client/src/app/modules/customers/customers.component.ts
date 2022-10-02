@@ -179,31 +179,31 @@ export class CustomersComponent implements OnInit {
   deleteCustomer(row: Customer){
     console.log("deleteCustomer",row);
     let datas = [...this.datas];
-    const index = datas.findIndex((data)=>{ return data.editable == true});
+    const index = datas.findIndex((data)=>{ return data.id === row.id});
     console.log({datas, index});
     if(index!=-1){   
-      if(row.id == null){
-        datas.splice(index,1);
-        let total = this.totalElements-1;
-        this.totalElements = total;
-        this.datas = datas;
-      }else {
-        this.notification.longProcessOngoing(true);
-        this.service.delete(row.id).subscribe( {
-          next: (res)=>{
-            this.notification.longProcessOngoing(false);
-            datas.splice(index,1);
-            this.datas = datas;
-            this.notification.info("Customer sucessfully deleted");
-          },
-          error: (err)=>{
-            this.notification.longProcessOngoing(false);
-            console.error(err);
-            this.notification.error("Customer deletion failed");
+      this.notification.userChoice({choices: [
+        {text: "NO",value: false},{text: "YES",value: true}
+      ],
+      questionText: "Do you realy want to delete?",
+      dialogTitle: "Delete confirmation"}).subscribe( (res:boolean)=>{
+          if(res === true){
+            this.notification.longProcessOngoing(true);
+              this.service.delete(row.id+'').subscribe( {
+                next: (res)=>{
+                  this.notification.longProcessOngoing(false);
+                  datas.splice(index,1);
+                  this.datas = datas;
+                  this.notification.info("Customer sucessfully deleted");
+                },
+                error: (err)=>{
+                  this.notification.longProcessOngoing(false);
+                  console.error(err);
+                  this.notification.error(err);
+                }
+              });
           }
-        });
-      }
-      
+      });
     }
     this.inEditionMode = false;
   }
