@@ -1,6 +1,6 @@
 # Meals_Orders
 
-![Menu image](https://github.com/christaime/Meals_Orders/blob/master/doc/images/Menu.png?raw=true)
+![Menu image](https://github.com/christaime/Meals_Orders/blob/master/doc/images/Menu.png)
 
 
 
